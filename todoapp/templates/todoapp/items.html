@@ -3,6 +3,8 @@
 <link rel="stylesheet" type="text/css" href="{% static 'todoapp/styles.css' %}">
 <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
 <script src="{% static 'todoapp/jquery-3.3.1.min.js' %}"></script>
+<script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+
 <body>
 <div class="container">
 <h1>steps of <span>{{todolist.title}}</span></h1>
@@ -76,11 +78,13 @@ $( document ).ready(function() {
 });
   
 function removeItem(tag, id){
-	
+	var csrftoken = Cookies.get('csrftoken');
 	$.ajax({
-		url: 'removeItem',
+		method: "POST",
+		url: 'removeItem/',
         data: {
-          'todoid': id
+			'CSRF': csrftoken,
+			'todoid': id
         },
         dataType: 'json',
           
@@ -92,11 +96,13 @@ function removeItem(tag, id){
 	}
 	
 function toggleCheck(tag, id){
-		
+	var csrftoken = Cookies.get('csrftoken');	
 	$.ajax({
-		url: 'toggleCheck',
+		method: "POST",
+		url: 'toggleCheck/',
         data: {
-          'todoid': id
+			'CSRF': csrftoken,
+			'todoid': id
         },
         dataType: 'json',
           
@@ -136,12 +142,15 @@ function startEdit(tag){
 
 	
 function saveEdit(tag, id) {
+	var csrftoken = Cookies.get('csrftoken');	
 	var titleValue = $(tag).parent('li').find('p').find('.titleTag').val();
 	var dateValue = $(tag).siblings('span').find('.dateTag').val();
 	var timeValue = $(tag).siblings('span').find('.timeTag').val();
 		$.ajax({
-			url: 'editItem',
+			method: "POST",
+			url: 'editItem/',
         data: {
+			'CSRF': csrftoken,
 			'itemId': id,
 			'titleValue': titleValue,
 			'dateValue': dateValue,

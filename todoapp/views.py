@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import JsonResponse, HttpResponse, HttpResponseRedirect
+from django.views.decorators.csrf import csrf_exempt
 from .models import ToDoList, ToDoItem
 
 
@@ -21,9 +22,11 @@ def index(request):
 			
 
 #To remove a todolist from database
+@csrf_exempt
 def removeList(request):
 	
-	list_id = request.GET.get('listid', None)
+	
+	list_id = request.POST.get('listid', None)
 	
 	removed_list = ToDoList.objects.get(pk=list_id)
 	removed_list.delete()
@@ -34,11 +37,12 @@ def removeList(request):
 	
 
 # To edit date or title of a todolist
+@csrf_exempt
 def editList(request):
 
-	new_title = request.GET.get("titleValue",None)
-	new_date = request.GET.get("dateValue", None)
-	list_id = request.GET.get("listId", None)
+	new_title = request.POST.get("titleValue",None)
+	new_date = request.POST.get("dateValue", None)
+	list_id = request.POST.get("listId", None)
 		
 	edited_list = ToDoList.objects.get(pk=list_id)
 	edited_list.title = new_title
@@ -88,9 +92,10 @@ def todoItem(request, list_id):
 	
 
 #To remove an item and update both ToDoList and ToDoItem tables
+@csrf_exempt
 def removeItem(request, list_id=None):
 	
-	todo_id = request.GET.get('todoid', None)
+	todo_id = request.POST.get('todoid', None)
 	
 	removed_item = ToDoItem.objects.get(pk=todo_id)
 	todo_list_id = removed_item.todolist_id; 
@@ -115,9 +120,10 @@ def removeItem(request, list_id=None):
 	
 
 #Toggle the "done" field of ToDoItem and change the "done" field of ToDoList if all the items have done or vice versa
+@csrf_exempt
 def toggleCheck(request, list_id=None):
 	
-	todo_id = request.GET.get('todoid', None)
+	todo_id = request.POST.get('todoid', None)
 	
 	checked_item = ToDoItem.objects.get(pk=todo_id)
 	
@@ -161,12 +167,13 @@ def isChecked(request, list_id=None):
 	
 
 #To change the title or date of a todoitem
+@csrf_exempt
 def editItem(request, list_id=None):
 
-	new_title = request.GET.get("titleValue",None)
-	new_date = request.GET.get("dateValue", None)
-	new_time = request.GET.get("timeValue", None)
-	item_id = request.GET.get("itemId", None)
+	new_title = request.POST.get("titleValue",None)
+	new_date = request.POST.get("dateValue", None)
+	new_time = request.POST.get("timeValue", None)
+	item_id = request.POST.get("itemId", None)
 		
 	edited_item = ToDoItem.objects.get(pk=item_id)
 	edited_item.title = new_title

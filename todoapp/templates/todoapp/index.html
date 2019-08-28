@@ -4,7 +4,7 @@
 <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
 
 <script src="{% static 'todoapp/jquery-3.3.1.min.js' %}"></script>
-
+<script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
 <body>
 <div class="container">
 <h1>To Do List</h1>
@@ -100,10 +100,13 @@ $(window).bind("pageshow", function(event) {
 
 
 function removeList(tag, id){
+	var csrftoken = Cookies.get('csrftoken');
 	$.ajax({
-		url: 'removeList',
+		method: "POST",
+		url: 'removeList/',
         data: {
-          'listid': id
+			'CSRF': csrftoken,
+			'listid': id
         },
         dataType: 'json',
           
@@ -138,11 +141,14 @@ function startEdit(tag){
 
 	
 function saveEdit(tag, id) {
+	var csrftoken = Cookies.get('csrftoken');
 	var titleValue = $(tag).siblings('.todotitle').find('.titleTag').val();
 	var dateValue = $(tag).siblings('.date').find('.dateTag').val();
 		$.ajax({
-			url: 'editList',
+			method: "POST",
+			url: 'editList/',
         data: {
+			'CSRF': csrftoken,
 			'listId': id,
 			'titleValue': titleValue,
 			'dateValue': dateValue
