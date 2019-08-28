@@ -1,0 +1,160 @@
+{% load static %}
+
+<link rel="stylesheet" type="text/css" href="{% static 'todoapp/styles.css' %}">
+<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+<script src="{% static 'todoapp/jquery-3.3.1.min.js' %}"></script>
+<body>
+<div class="container">
+<h1>steps of <span>{{todolist.title}}</span></h1>
+<h4>due to <span>{{todolist.deadline}}</span></h4>
+<form action="" method="post">
+	{% csrf_token %}
+	<div class="todoFields">
+		<span>
+			<label for="title" class="stepNumber">step {{step_number}}:</label>
+			<input type="text" id="title" placeholder="I have to do..." name="title" required>
+		</span>
+		<span>
+			<label for="due_date">Deadline</label>
+			<input type="date" id="due_date" name="due_date">
+		</span>
+		<span>
+			<label for="due_time"></label>
+			<input type="time" id="due_time" name="due_time">
+		</span>
+		<button type="submit" name="save" class="addItem"><b>Next Item</b></button>
+	</div>
+	<ol class="todoitems">
+		{% for item in todoitems %}
+			<li data-id="{{item.id}}">
+				<p class="taskText">{{item.title}}</p>
+				<span class="taskText">should be done before<span class="itemDate"> {{item.time_to_do}}</span></span>
+				<i class="fa fa-circle-o unChecked" onclick="toggleCheck({% verbatim %}this{% endverbatim %}, {{item.id}})"></i>
+				<i class="fa fa-check-circle-o checked" onclick="toggleCheck({% verbatim %}this{% endverbatim %}, {{item.id}})"></i>
+				<i class="fa fa-close delete" onclick="removeItem({% verbatim %}this{% endverbatim %}, {{item.id}})"></i>
+				<i class="fa fa-pencil editItem" onclick="startEdit({% verbatim %}this{% endverbatim %})"></i>
+				<i class="fa fa-check saveItem" onclick="saveEdit({% verbatim %}this{% endverbatim %}, {{item.id}})"></i>
+			</li>
+		{% endfor %}
+	</ol>
+<form>
+</div>
+</body>
+
+{% block javascript %}
+<script>
+  
+//set the default value and minimum date of the deadline to today
+let today = new Date().toISOString().substr(0, 10);
+$("#due_date").val(today);
+$("#due_date").attr('min',today); 
+ 
+ 
+$( document ).ready(function() {
+	
+	// Display list items as line-through or not based on their "done" fields.
+	var listItems = $(".todoitems li");
+	for (let li of listItems) {
+		$.ajax({
+			url: 'isChecked',
+			data: {
+				'todoid': $(li).attr("data-id")
+			},
+			dataType: 'json',
+          
+			success: function (data) {
+				if(data.is_checked){
+					$(li).addClass('done').removeClass('unDone');
+					$(li).find('.taskText').css({"text-decoration": "line-through"});
+				}else{
+					$(li).addClass('unDone').removeClass('done');
+					$(li).find('.taskText').css({"text-decoration": "none"});
+				}
+			}
+		});
+	}
+});
+  
+function removeItem(tag, id){
+	
+	$.ajax({
+		url: 'removeItem',
+        data: {
+          'todoid': id
+        },
+        dataType: 'json',
+          
+        success: function (data) {
+			$(tag).parent("li").remove();
+			$('.stepNumber').html('step '+data.step_number+':');
+        }
+     });
+	}
+	
+function toggleCheck(tag, id){
+		
+	$.ajax({
+		url: 'toggleCheck',
+        data: {
+          'todoid': id
+        },
+        dataType: 'json',
+          
+        success: function (data) {
+			if(data.is_checked){
+				$(tag).parent('li').addClass('done').removeClass('unDone');
+				$(tag).siblings('.taskText').css({"text-decoration": "line-through"});
+			}else{
+				$(tag).parent('li').addClass('unDone').removeClass('done');
+				$(tag).siblings('.taskText').css({"text-decoration": "none"});
+			}
+        }
+    });
+} 
+
+function startEdit(tag){
+        
+        var title = $(tag).parent('li').find('p').text();
+		var deadline =  $(tag).siblings('.itemDate').text(); 
+        
+		$(tag).siblings('.saveItem').addClass('active');
+
+        var titleTag = '<input type="text" value= "' + title +'" class="titleTag"/>'
+        $(tag).parent('li').find('p').html(titleTag);
+		
+		var dateTag = '<input type="date" class="dateTag"/><input type="time" class="timeTag"/>'
+		$(tag).siblings('span').find('.itemDate').html(dateTag);
+
+        $("ul input").click(function (e) {
+            e.stopPropagation();
+        });
+    }
+
+    $("ul .saveList").click(function (e) {
+        e.stopPropagation();
+    });
+
+	
+function saveEdit(tag, id) {
+	var titleValue = $(tag).parent('li').find('p').find('.titleTag').val();
+	var dateValue = $(tag).siblings('span').find('.dateTag').val();
+	var timeValue = $(tag).siblings('span').find('.timeTag').val();
+		$.ajax({
+			url: 'editItem',
+        data: {
+			'itemId': id,
+			'titleValue': titleValue,
+			'dateValue': dateValue,
+			'timeValue': timeValue
+        },
+        dataType: 'json',
+          
+        success: function (data) {
+			$(tag).parent('li').find('p').html(titleValue);
+			$(tag).siblings('span').find('.itemDate').html(data.new_date);
+			$(tag).removeClass('active');
+        }
+    });
+}   
+</script>
+{% endblock %}

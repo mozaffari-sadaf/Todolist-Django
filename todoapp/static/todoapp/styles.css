@@ -1,0 +1,307 @@
+body{
+	background: url("images/todo.jpg") no-repeat right top fixed; 
+	-webkit-background-size: cover;
+	-moz-background-size: cover;
+	background-size: cover;
+	
+	font-family: "Comic Sans MS", "Comic Sans", cursive;
+}
+
+.container{
+	width: 50%;	
+	padding: 20px 20px 50px 30px;
+}
+
+h1{
+	color:white;
+	margin-bottom: 20px !important;
+}
+
+h3, h4{
+	color: #17223E;
+}
+
+h4{
+	margin-top: 0 !important;
+}
+
+
+h4 > span{
+	color: #FF4500;
+}
+
+
+.todoFields{
+	margin-top: 40px;
+	color: #17223E;
+}
+
+.first-row{
+	margin-bottom:40px;
+}
+
+.first-row > span{
+	margin-right: 20px;
+	display: inine-block;
+}
+
+.first-row > span > input, .todoFields > span > input{
+	height: 40px;
+}
+
+button.addTask, button.addItem, input{
+	border-radius: 10px 10px 10px 10px;
+	overflow: hidden;
+}
+
+.addTask{
+	height:40px;
+	width: 40px;
+	color: #0a93e2;
+	background: white;
+	position: relative;
+	bottom: 20px;
+	margin-left: 40px;
+	cursor: pointer;
+}
+
+.addTask > i{
+	background-image: url("images/add-icon.png");
+	display: inline-block;
+	width:32px;
+	height: 32px;
+	position:absolute;
+	left:2px;
+	bottom: 2.5px;
+}
+
+.addItem{
+	height:42px;
+	width: 100px;
+	color: #0a93e2;
+	background: white;
+	margin-left: 40px;
+	cursor: pointer;
+}
+
+.todolist, .doneList{
+	margin-top: 40px;
+}
+
+.todolist > li, .doneList > li{
+	list-style: none;
+	display: inline-block;
+	width: 200px;
+	background: white;
+	margin-right: 30px;
+	margin-bottom: 10px;
+	padding: 5px;
+	position: relative;
+	height: 40px;
+	border-radius: 10px 10px 10px 10px;
+	overflow: hidden;
+}
+
+.date{
+	font-size: 8pt;
+	position:absolute;
+	bottom: 5px;
+}
+
+.viewItems{
+	display:inline-block;
+	width:85px;
+	height:100%;
+	position: absolute;
+	right:0;
+	top:0;
+	font-size:8pt;
+	text-align: center;
+	line-height: 40px;
+	text-decoration: none;
+	color: black;
+}
+
+.todolist .viewItems{
+	background: #C0C0C0;
+}
+
+.doneList .viewItems{
+	background: #7FFF00;
+}
+
+.delete, .checked, .unChecked, .editList, .editItem, .saveItem{
+	display: none !important;
+	cursor: pointer;
+}
+
+.delete{
+	color:red;
+}
+
+.checked{
+	color: green;
+}
+
+.editList{
+	color: #0000FF
+}
+
+.editItem, .saveItem{
+	color: #98FB98
+}
+
+.save{
+	color: green;
+}
+
+.todoitems{
+	padding-left: 27px;
+	padding-right: 7px;
+	display:inline-block;
+	background: #1d1f2e;
+	color: white;
+	border-radius: 10px 10px 10px 10px;
+	overflow: hidden;
+}
+
+
+li:hover > i.delete, li:hover > i.editList{
+	
+	display:inline-block !important;
+}
+
+.todoitems > li.unDone:hover > i.unChecked, .todoitems > li.unDone:hover > i.editItem{
+	display:inline-block !important;
+}
+
+.todoitems > li.unDone:hover > i.checked{
+	display:none !important;
+}
+
+.todoitems > li.done:hover > i.checked{
+	display:inline-block !important;
+}
+
+.todoitems > li.done:hover > i.unChecked, .todoitems > li.done:hover > i.editItem{
+	display:none !important;
+}
+
+.todolist .delete, .doneList .delete{
+	position: absolute;
+	right: 5px;
+	top:5px;
+}
+
+.todolist a, .doneList a{
+	padding-top:9px;
+	line-height:16px;
+}
+
+.todolist .editList, .doneList .editList{
+	position: absolute;
+	left: 110px;
+	top:5px;
+}
+
+
+.saveList{
+	display: none !important;
+	position: absolute;
+	left: 107px;
+	bottom:5px;
+	color:green;
+	cursor: pointer;
+	
+}
+
+.saveList.active{
+	display: inline-block !important;
+}
+
+.saveItem.active{
+	display: inline-block !important;
+}
+
+.todolist li p, .doneList li p{
+	margin-top:0;
+	width: 115px;
+	text-overflow:ellipsis;
+	white-space: nowrap;
+	overflow: hidden;
+}
+
+
+/* switch styles */
+.toggle-label {
+  position: relative;
+  display: inline-block;
+  width: 100px;
+  height: 40px;
+  border: 1px solid #808080;
+  border-radius: 10px 10px 10px 10px;
+  margin-right: 30px;
+  line-height: 38px;
+}
+.toggle-label input[type=checkbox] { 
+  opacity: 0;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+}
+.toggle-label input[type=checkbox]+.back {
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	background: #ed1c24;
+	transition: background 150ms linear;  
+	border-radius: 10px 10px 10px 10px;
+}
+.toggle-label input[type=checkbox]:checked+.back {
+  background: #00a651; /*green*/
+}
+
+.toggle-label input[type=checkbox]+.back .toggle {
+  display: block;
+  position: absolute;
+  content: ' ';
+  background: #fff;
+  width: 50%; 
+  height: 100%;
+  transition: margin 150ms linear;
+  border: 1px solid #808080;
+  border-radius: 10px 10px 10px 10px;
+}
+.toggle-label input[type=checkbox]:checked+.back .toggle {
+  margin-left: 50px;
+}
+.toggle-label .label {
+  display: block;
+  position: absolute;
+  width: 50%;
+  color: #ddd;
+  text-align: center;
+  font-size: 10pt;
+}
+.toggle-label .label.on { left: 0px; }
+.toggle-label .label.off { right: 0px; }
+
+.toggle-label input[type=checkbox]:checked+.back .label.on {
+  color: #fff;
+}
+.toggle-label input[type=checkbox]+.back .label.off {
+  color: #fff;
+}
+.toggle-label input[type=checkbox]:checked+.back .label.off {
+  color: #ddd;
+}
+
+
+.important, .urgent{
+	position: relative;
+	bottom:12px;
+}
+
+.todoitems p{
+	display: inline-block !important;
+}
