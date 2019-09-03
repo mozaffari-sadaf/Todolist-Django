@@ -1,11 +1,30 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import JsonResponse, HttpResponse, HttpResponseRedirect
 from django.views.decorators.csrf import csrf_exempt
+from django.utils import timezone
+from django.db.models.functions import Extract, ExtractWeek
 from .models import ToDoList, ToDoItem
+import datetime
 
 
-#To display list of todolists
+#To display items of each day, week, or month
 def index(request):
+
+	today = timezone.now().date()
+	current_week = today.strftime("%V")
+	current_month = today.month
+	
+	daily_list = ToDoItem.objects.filter(date_to_do=str(today)).order_by('done','time_to_do','-important');
+	
+	weekly_list = ToDoItem.objects.filter(date_to_do__week=current_week).order_by('done','date_to_do','-important','time_to_do'); 
+	
+	monthly_list = ToDoItem.objects.filter(date_to_do__month=current_month).order_by('done','date_to_do','-important','time_to_do');
+	
+	return render(request, "todoapp/index.html", {"daily_list": daily_list, "weekly_list": weekly_list, "monthly_list": monthly_list})
+	
+
+#To display list of general Tasks
+def generalTasks(request):
 	
 	todolist = ToDoList.objects.all()
 	
@@ -13,18 +32,17 @@ def index(request):
 		
 		if "save" in request.POST:
 			title = request.POST["title"]
-			deadline = str(request.POST["deadline"])
+			deadline = request.POST["deadline"]
 			ToDo = ToDoList(title=title,deadline=deadline)
 			ToDo.save()
-			return redirect("/todoapp")
+			return redirect("/todoapp/generalTasks")
 		
-	return render(request, "todoapp/index.html", {"todolist": todolist})
+	return render(request, "todoapp/general.html", {"todolist": todolist})
 			
 
 #To remove a todolist from database
 @csrf_exempt
 def removeList(request):
-	
 	
 	list_id = request.POST.get('listid', None)
 	
@@ -72,8 +90,18 @@ def todoItem(request, list_id):
 		if "save" in request.POST:
 			
 			to_do_name = request.POST["title"]
-			time_to_do = str(request.POST["due_date"]) + "T" + str(request.POST["due_time"])+"Z"
-			item = ToDoItem(todolist_id=list_id,title=to_do_name,time_to_do=time_to_do)
+			date_to_do = str(request.POST["due_date"])
+			time_to_do = None
+			
+			if request.POST["due_time"] is not '':
+				time_to_do = str(request.POST["due_time"])
+
+			if request.POST["important"]:
+				important = True
+			else:
+				important = False
+				
+			item = ToDoItem(todolist_id=list_id,title=to_do_name,date_to_do=date_to_do,time_to_do=time_to_do,important=important)
 			item.save()
 			
 			items_count = ToDoItem.objects.filter(todolist_id=list_id).count()
@@ -153,7 +181,7 @@ def toggleCheck(request, list_id=None):
 	
 
 #To check that if the "done" field of an item is set to True or False
-def isChecked(request, list_id=None):
+def isChecked(request):
 	todo_id = request.GET.get('todoid', None)
 	
 	checked_item = ToDoItem.objects.get(pk=todo_id)
@@ -168,20 +196,25 @@ def isChecked(request, list_id=None):
 
 #To change the title or date of a todoitem
 @csrf_exempt
-def editItem(request, list_id=None):
-
+def editItem(request):
+	
+	new_time = None;
+	if request.POST.get("timeValue", None) is not '':
+		new_time = request.POST.get("timeValue", None)
+	
 	new_title = request.POST.get("titleValue",None)
 	new_date = request.POST.get("dateValue", None)
-	new_time = request.POST.get("timeValue", None)
+	
 	item_id = request.POST.get("itemId", None)
 		
 	edited_item = ToDoItem.objects.get(pk=item_id)
 	edited_item.title = new_title
 	
-	if new_date != "" or new_time != "":
-		edited_item.time_to_do = new_date + " " + new_time
+	# if new_date != "" and new_time != "":
+	edited_item.date_to_do = new_date
+	edited_item.time_to_do = new_time
 	
-	ret_data = {'new_date': edited_item.time_to_do}
+	ret_data = {'new_date': edited_item.date_to_do,'new_time': edited_item.time_to_do}
 	
 	edited_item.save();
 		

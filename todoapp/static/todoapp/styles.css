@@ -13,7 +13,7 @@ body{
 }
 
 h1{
-	color:white;
+	color: white;
 	margin-bottom: 20px !important;
 }
 
@@ -33,20 +33,35 @@ h4 > span{
 
 .todoFields{
 	margin-top: 40px;
+	margin-bottom:40px;
 	color: #17223E;
 }
 
-.first-row{
-	margin-bottom:40px;
-}
-
-.first-row > span{
+.todoFields > span{
 	margin-right: 20px;
 	display: inine-block;
 }
 
-.first-row > span > input, .todoFields > span > input{
+.todoFields input{
 	height: 40px;
+}
+
+.switch-button{
+	position: relative;
+	top:18px;
+}
+
+.first-row{
+	margin-bottom: 20px;
+}
+
+.title{
+	margin-right:49px;
+}
+
+.title input{
+	position: relative;
+	left: 14px;
 }
 
 button.addTask, button.addItem, input{
@@ -60,7 +75,7 @@ button.addTask, button.addItem, input{
 	color: #0a93e2;
 	background: white;
 	position: relative;
-	bottom: 20px;
+	bottom: 5px;
 	margin-left: 40px;
 	cursor: pointer;
 }
@@ -143,12 +158,16 @@ button.addTask, button.addItem, input{
 	color: green;
 }
 
+.unChecked{
+	color: #DCDCDC;
+}
+
 .editList{
-	color: #0000FF
+	color: #0000FF;
 }
 
 .editItem, .saveItem{
-	color: #98FB98
+	color: #008000;
 }
 
 .save{
@@ -158,9 +177,11 @@ button.addTask, button.addItem, input{
 .todoitems{
 	padding-left: 27px;
 	padding-right: 7px;
+	margin-bottom: 2px;
+	margin-top: 2px;
 	display:inline-block;
-	background: #1d1f2e;
-	color: white;
+	color: #1d1f2e;
+	background: white;
 	border-radius: 10px 10px 10px 10px;
 	overflow: hidden;
 }
@@ -200,10 +221,9 @@ li:hover > i.delete, li:hover > i.editList{
 
 .todolist .editList, .doneList .editList{
 	position: absolute;
-	left: 110px;
+	left: 108px;
 	top:5px;
 }
-
 
 .saveList{
 	display: none !important;
@@ -235,6 +255,7 @@ li:hover > i.delete, li:hover > i.editList{
 /* switch styles */
 .toggle-label {
   position: relative;
+  top:16px;
   display: inline-block;
   width: 100px;
   height: 40px;
@@ -297,11 +318,66 @@ li:hover > i.delete, li:hover > i.editList{
 }
 
 
-.important, .urgent{
-	position: relative;
-	bottom:12px;
-}
-
 .todoitems p{
 	display: inline-block !important;
+}
+
+#tabs{
+    float: left;
+	margin-bottom: 0;
+    padding: 0;
+	margin-top:0;
+    background: rgba(220,220,220, 0.5);
+    border-radius: 10px 10px 10px 10px;
+}
+
+#tabs li{
+        list-style: none;
+        float: left;
+        padding: 20px;
+        cursor: pointer;
+        position: relative;
+        padding-right: 20px;
+		border-radius: 10px 10px 10px 10px;
+}
+
+#tabs li.active{
+        background: white;
+        border-top: 2px solid darkturquoise;
+        box-shadow:  0 0 4px rgba(0,0,0,0.2);
+}
+
+#tabchild{
+	max-width: 100%;
+	float: left;
+	clear: both;
+	display: block;
+	background: rgba(220,220,220, 0.5);
+	border-radius: 10px 10px 10px 10px;
+}
+
+#tabchild section{
+        padding: 10px;
+        display: none !important;
+        float: left;
+        width: 100%;
+}
+
+#tabchild section.active{
+	display: block !important;
+}
+
+
+.planning{
+	text-decoration: none;
+	display:inline-block;
+	height:60px;
+	width: 120px;
+	color: darkturquoise;
+	background: white;
+	margin-left: 40px;
+	cursor: pointer;
+	border-radius: 10px 10px 10px 10px;
+	line-height: 53px;
+	text-align: center;
 }

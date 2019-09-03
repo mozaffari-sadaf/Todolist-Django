@@ -1,0 +1,147 @@
+{% load static %}
+
+<link rel="stylesheet" type="text/css" href="{% static 'todoapp/styles.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'fontawesome/css/fontawesome-all.min.css' %}">
+
+<script src="{% static 'todoapp/jquery-3.3.1.min.js' %}"></script>
+<script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+<body>
+<div class="container">
+<h1>General Tasks</h1>
+<form action="" method="post">
+	{% csrf_token %}
+	<div class="todoFields">
+		
+			<span>
+				<label for="title">Title</label>
+				<input type="text" id="title" placeholder="I want to do..." name="title" required>
+			</span>
+			
+			<span>
+				<label for="deadline">Deadline</label>
+				<input type="date" id="deadline" name="deadline" min="new Date().toISOString().split('T')[0]">
+			</span>
+		
+			<button type="submit" name="save" class="addTask"><i></i></button>
+	</div>
+	
+	<h3>In Progress Tasks:</h3>
+	<ul class="todolist">
+		{% for todo in todolist %}
+			{% if not todo.done %}
+			<li data-id="{{todo.id}}">
+				<p class="todotitle">{{todo.title}}</p>
+				<div class="date">{{todo.deadline}}</div>
+				<a href="{% url 'todoapp:items' todo.id %}" class="viewItems">View<br>Task Items</a>
+				<i class="fa fa-times delete" onclick="removeList({% verbatim %}this{% endverbatim %}, {{todo.id}})"></i>
+				<i class="fa fa-pencil-alt editList" onclick="startEdit({% verbatim %}this{% endverbatim %})"></i>
+				<i class="fa fa-check saveList" onclick="saveEdit({% verbatim %}this{% endverbatim %}, {{todo.id}})"></i>
+			</li>
+			{% endif %}
+		{% endfor %}
+	</ul>
+	
+	<h3>Accomplished Tasks:</h3>
+	<ul class="doneList">
+		{% for todo in todolist %}
+			{% if todo.done %}
+			<li data-id="{{todo.id}}">
+				<p class="todotitle">{{todo.title}}</p>
+				<div class="date">{{todo.deadline}}</div>
+				<a href="{% url 'todoapp:items' todo.id %}" class="viewItems">View<br>Task Items</a>
+				<i class="fa fa-times delete" onclick="removeList({% verbatim %}this{% endverbatim %}, {{todo.id}})"></i>
+				<i class="fa fa-pencil-alt editList" onclick="startEdit({% verbatim %}this{% endverbatim %})"></i>
+				<i class="fa fa-check saveList" onclick="saveEdit({% verbatim %}this{% endverbatim %}, {{todo.id}})"></i>
+			</li>
+			{% endif %}
+		{% endfor %}
+	</ul>
+	
+<form>
+</div>
+</body>
+
+{% block javascript %}
+<script>
+
+
+//set the default value and minimum date of deadline to today
+let today = new Date().toISOString().substr(0, 10);
+$("#deadline").val(today);
+$("#deadline").attr('min',today);
+
+//Display updated version of todolist on back button
+$(window).bind("pageshow", function(event) {
+    if (event.originalEvent.persisted) {
+        window.location.reload(); 
+    }
+});
+
+
+function removeList(tag, id){
+	var csrftoken = Cookies.get('csrftoken');
+	$.ajax({
+		method: "POST",
+		url: 'removeList/',
+        data: {
+			'CSRF': csrftoken,
+			'listid': id
+        },
+        dataType: 'json',
+          
+        success: function (data) {
+			$(tag).parent("li").remove();
+        }
+    });
+}
+
+
+function startEdit(tag){
+        
+        var title = $(tag).siblings('.todotitle').text();
+		var deadline =  $(tag).siblings('.date').text(); 
+        
+		$(tag).siblings('.saveList').addClass('active');
+
+        var titleTag = '<input type="text" value= "' + title +'" class="titleTag"/>'
+        $(tag).siblings('.todotitle').html(titleTag);
+		
+		var dateTag = '<input type="date" value= "' + deadline +'" class="dateTag"/>'
+		$(tag).siblings('.date').html(dateTag);
+
+        $("ul input").click(function (e) {
+            e.stopPropagation();
+        });
+    }
+
+    $("ul .saveList").click(function (e) {
+        e.stopPropagation();
+    });
+
+	
+function saveEdit(tag, id) {
+	var csrftoken = Cookies.get('csrftoken');
+	var titleValue = $(tag).siblings('.todotitle').find('.titleTag').val();
+	var dateValue = $(tag).siblings('.date').find('.dateTag').val();
+		$.ajax({
+			method: "POST",
+			url: 'editList/',
+        data: {
+			'CSRF': csrftoken,
+			'listId': id,
+			'titleValue': titleValue,
+			'dateValue': dateValue
+        },
+        dataType: 'json',
+          
+        success: function (data) {
+			$(tag).siblings('.todotitle').html(titleValue);
+			$(tag).siblings('.date').html(data.new_date);
+			$(tag).removeClass('active');
+        }
+    });
+}
+
+</script>
+
+{% endblock %}

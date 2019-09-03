@@ -5,11 +5,12 @@ from . import views
 app_name = 'todoapp'
 urlpatterns = [
 	path('', views.index, name='index'),
-	path('editList/', views.editList, name='editList'),
-	path('removeList/', views.removeList, name='removeList'),
+	path('generalTasks/', views.generalTasks, name='generalTasks'),
+	path('generalTasks/editList/', views.editList, name='editList'),
+	path('generalTasks/removeList/', views.removeList, name='removeList'),
 	path('<int:list_id>/', views.todoItem, name='items'),
-	path('<int:list_id>/editItem/', views.editItem, name='editItem'),
-	path('<int:list_id>/removeItem/', views.removeItem, name='removeItem'),
-	path('<int:list_id>/toggleCheck/', views.toggleCheck, name='toggleCheck'),
-	path('<int:list_id>/isChecked/', views.isChecked, name='isChecked'),
+	path('editItem/', views.editItem, name='editItem'),
+	path('removeItem/', views.removeItem, name='removeItem'),
+	path('toggleCheck/', views.toggleCheck, name='toggleCheck'),
+	path('isChecked/', views.isChecked, name='isChecked'),
 ]

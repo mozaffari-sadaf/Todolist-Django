@@ -1,40 +1,54 @@
 {% load static %}
 
 <link rel="stylesheet" type="text/css" href="{% static 'todoapp/styles.css' %}">
-<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" type="text/css" href="{% static 'fontawesome/css/fontawesome-all.min.css' %}">
 <script src="{% static 'todoapp/jquery-3.3.1.min.js' %}"></script>
 <script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
 
 <body>
 <div class="container">
-<h1>steps of <span>{{todolist.title}}</span></h1>
+<h1>Steps of <span>{{todolist.title}}</span></h1>
 <h4>due to <span>{{todolist.deadline}}</span></h4>
 <form action="" method="post">
 	{% csrf_token %}
 	<div class="todoFields">
-		<span>
-			<label for="title" class="stepNumber">step {{step_number}}:</label>
-			<input type="text" id="title" placeholder="I have to do..." name="title" required>
-		</span>
-		<span>
-			<label for="due_date">Deadline</label>
-			<input type="date" id="due_date" name="due_date">
-		</span>
-		<span>
-			<label for="due_time"></label>
-			<input type="time" id="due_time" name="due_time">
-		</span>
-		<button type="submit" name="save" class="addItem"><b>Next Item</b></button>
+		<div class="first-row">
+			<span class="title">
+				<label for="title" class="stepNumber">step {{step_number}}:</label>
+				<input type="text" id="title" placeholder="I have to do..." name="title" required>
+			</span>
+			<span class=important>Important</span>
+			<label class='toggle-label'>
+				<input type='checkbox' name="important"/>
+				<span class='back'>
+					<span class='toggle'></span>
+					<span class='label on'>YES</span>
+					<span class='label off'>NO</span>  
+				</span>
+			</label>
+		</div>
+		<div class="second-row">
+			<span>
+				<label for="due_date">Deadline</label>
+				<input type="date" id="due_date" name="due_date">
+			</span>
+			<span>
+				<label for="due_time"></label>
+				<input type="time" id="due_time" name="due_time">
+			</span>
+			<button type="submit" name="save" class="addItem"><b>Next Item</b></button>
+		</div>
 	</div>
 	<ol class="todoitems">
 		{% for item in todoitems %}
 			<li data-id="{{item.id}}">
-				<p class="taskText">{{item.title}}</p>
-				<span class="taskText">should be done before<span class="itemDate"> {{item.time_to_do}}</span></span>
-				<i class="fa fa-circle-o unChecked" onclick="toggleCheck({% verbatim %}this{% endverbatim %}, {{item.id}})"></i>
-				<i class="fa fa-check-circle-o checked" onclick="toggleCheck({% verbatim %}this{% endverbatim %}, {{item.id}})"></i>
-				<i class="fa fa-close delete" onclick="removeItem({% verbatim %}this{% endverbatim %}, {{item.id}})"></i>
-				<i class="fa fa-pencil editItem" onclick="startEdit({% verbatim %}this{% endverbatim %})"></i>
+				{% if item.important %}<b>{% endif %}<p class="taskText">{{item.title}}</p>
+				<span class="taskText">should be done before<span class="itemDate"> {{item.date_to_do}}</span><span class="itemTime"> {% if item.time_to_do %}{{item.time_to_do}} {% endif %}</span></span>
+				{% if item.important %}</b>{% endif %}
+				<i class="fa fa-circle unChecked" onclick="toggleCheck({% verbatim %}this{% endverbatim %}, {{item.id}})"></i>
+				<i class="fa fa-check-circle checked" onclick="toggleCheck({% verbatim %}this{% endverbatim %}, {{item.id}})"></i>
+				<i class="fa fa-times delete" onclick="removeItem({% verbatim %}this{% endverbatim %}, {{item.id}})"></i>
+				<i class="fa fa-pencil-alt editItem" onclick="startEdit({% verbatim %}this{% endverbatim %})"></i>
 				<i class="fa fa-check saveItem" onclick="saveEdit({% verbatim %}this{% endverbatim %}, {{item.id}})"></i>
 			</li>
 		{% endfor %}
@@ -58,7 +72,7 @@ $( document ).ready(function() {
 	var listItems = $(".todoitems li");
 	for (let li of listItems) {
 		$.ajax({
-			url: 'isChecked',
+			url: '../isChecked',
 			data: {
 				'todoid': $(li).attr("data-id")
 			},
@@ -76,12 +90,13 @@ $( document ).ready(function() {
 		});
 	}
 });
+
   
 function removeItem(tag, id){
 	var csrftoken = Cookies.get('csrftoken');
 	$.ajax({
 		method: "POST",
-		url: 'removeItem/',
+		url: '../removeItem/',
         data: {
 			'CSRF': csrftoken,
 			'todoid': id
@@ -99,7 +114,7 @@ function toggleCheck(tag, id){
 	var csrftoken = Cookies.get('csrftoken');	
 	$.ajax({
 		method: "POST",
-		url: 'toggleCheck/',
+		url: '../toggleCheck/',
         data: {
 			'CSRF': csrftoken,
 			'todoid': id
@@ -148,7 +163,7 @@ function saveEdit(tag, id) {
 	var timeValue = $(tag).siblings('span').find('.timeTag').val();
 		$.ajax({
 			method: "POST",
-			url: 'editItem/',
+			url: '../editItem/',
         data: {
 			'CSRF': csrftoken,
 			'itemId': id,
@@ -161,6 +176,7 @@ function saveEdit(tag, id) {
         success: function (data) {
 			$(tag).parent('li').find('p').html(titleValue);
 			$(tag).siblings('span').find('.itemDate').html(data.new_date);
+			$(tag).siblings('span').find('.itemTime').html(data.new_time);
 			$(tag).removeClass('active');
         }
     });
