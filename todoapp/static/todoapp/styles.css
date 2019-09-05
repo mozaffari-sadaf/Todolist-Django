@@ -118,6 +118,8 @@ button.addTask, button.addItem, input{
 }
 
 .date{
+	max-width: 90px;
+	display: inline-block;
 	font-size: 8pt;
 	position:absolute;
 	bottom: 5px;
@@ -380,4 +382,22 @@ li:hover > i.delete, li:hover > i.editList{
 	border-radius: 10px 10px 10px 10px;
 	line-height: 53px;
 	text-align: center;
+}
+
+span.done{
+	position: absolute;
+	left: 90px;
+	bottom:4px;
+	display: none;
+	width:28px;
+	height:15px;
+	border-radius: 5px 5px 5px 5px;
+	font-size:7pt;
+	background: #7FFF00;
+	padding-left:5px;
+	cursor: pointer;
+}
+
+.todolist li:hover span.done{
+	display: inline-block;
 }

@@ -96,7 +96,7 @@ def todoItem(request, list_id):
 			if request.POST["due_time"] is not '':
 				time_to_do = str(request.POST["due_time"])
 
-			if request.POST["important"]:
+			if request.POST.get("important", None):
 				important = True
 			else:
 				important = False
@@ -193,6 +193,16 @@ def isChecked(request):
 	
 	return JsonResponse(data)
 	
+#To get the deadline of that task and set the maximum value of dateField to that	
+def getMaxDate(request):
+	
+	task_id = request.GET.get('todoid', None)
+	
+	deadline = ToDoList.objects.get(pk=task_id).deadline
+	
+	data = {'deadline': deadline}
+	
+	return JsonResponse(data)
 
 #To change the title or date of a todoitem
 @csrf_exempt
@@ -219,3 +229,40 @@ def editItem(request):
 	edited_item.save();
 		
 	return JsonResponse(ret_data);
+	
+#To make the task and its items done	
+@csrf_exempt	
+def taskDone(request):
+	
+	task_id = request.POST.get('taskId', None)
+	
+	task = ToDoList.objects.get(pk=task_id)
+	
+	task.done = True
+	
+	task.save();
+	
+	
+	items = ToDoItem.objects.filter(todolist_id=task_id)
+
+	for item in items:
+		item.done =True
+		item.save()
+	
+	
+	data = {'is_done': True}
+	
+	return JsonResponse(data)
+	
+#Get the task title of the given item	
+def getTaskTitle(request):
+
+	item_id = request.GET.get('todoid', None)
+	
+	task_id = ToDoItem.objects.get(pk=item_id).todolist_id
+	
+	task_title = ToDoList.objects.get(pk=task_id).title
+	
+	data = {'task_title': task_title}
+	
+	return JsonResponse(data)

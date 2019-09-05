@@ -13,4 +13,7 @@ urlpatterns = [
 	path('removeItem/', views.removeItem, name='removeItem'),
 	path('toggleCheck/', views.toggleCheck, name='toggleCheck'),
 	path('isChecked/', views.isChecked, name='isChecked'),
+	path('getMaxDate/', views.getMaxDate, name='getMaxDate'),
+	path('generalTasks/taskDone/', views.taskDone, name='taskDone'),
+	path('getTaskTitle/', views.getTaskTitle, name='getTaskTitle'),
 ]

@@ -31,7 +31,8 @@
 			{% if not todo.done %}
 			<li data-id="{{todo.id}}">
 				<p class="todotitle">{{todo.title}}</p>
-				<div class="date">{{todo.deadline}}</div>
+				<span class="date">{{todo.deadline}}</span>
+				<span class="done" onclick="taskDone({% verbatim %}this{% endverbatim %},{{todo.id}})">Done</span>
 				<a href="{% url 'todoapp:items' todo.id %}" class="viewItems">View<br>Task Items</a>
 				<i class="fa fa-times delete" onclick="removeList({% verbatim %}this{% endverbatim %}, {{todo.id}})"></i>
 				<i class="fa fa-pencil-alt editList" onclick="startEdit({% verbatim %}this{% endverbatim %})"></i>
@@ -69,6 +70,7 @@
 let today = new Date().toISOString().substr(0, 10);
 $("#deadline").val(today);
 $("#deadline").attr('min',today);
+
 
 //Display updated version of todolist on back button
 $(window).bind("pageshow", function(event) {
@@ -138,6 +140,29 @@ function saveEdit(tag, id) {
 			$(tag).siblings('.todotitle').html(titleValue);
 			$(tag).siblings('.date').html(data.new_date);
 			$(tag).removeClass('active');
+        }
+    });
+}
+
+//Make the task and its items marked as done
+function taskDone(tag, taskId){
+	
+	var taskTitle = $(tag).siblings('.todotitle').html();
+	var taskDeadline = $(tag).siblings('.date').html();
+	var csrftoken = Cookies.get('csrftoken');
+	$.ajax({
+			method: "POST",
+			url: 'taskDone/',
+        data: {
+			'CSRF': csrftoken,
+			'taskId': taskId
+        },
+        dataType: 'json',
+          
+        success: function (data) {
+			$(tag).parent('li').remove();
+			newTag = '<li data-id="'+taskId+'"><p class="todotitle">'+taskTitle+'</p><div class="date">'+taskDeadline+'</div><a href="/todoapp/'+taskId+'" class="viewItems">View<br>Task Items</a><i class="fa fa-times delete" onclick="removeList('+{% verbatim %}this{% endverbatim %}+','+ taskId+')"></i><i class="fa fa-pencil-alt editList" onclick="startEdit('+{% verbatim %}this{% endverbatim %}+')"></i><i class="fa fa-check saveList" onclick="saveEdit('+{% verbatim %}this{% endverbatim %}, taskId+')"></i></li>';
+$('.doneList').append(newTag);
         }
     });
 }

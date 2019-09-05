@@ -64,7 +64,7 @@
 let today = new Date().toISOString().substr(0, 10);
 $("#due_date").val(today);
 $("#due_date").attr('min',today); 
- 
+
  
 $( document ).ready(function() {
 	
@@ -89,6 +89,19 @@ $( document ).ready(function() {
 			}
 		});
 	}
+	
+	//Get the deadline value of the task and set the max possible value of item's deadline field to that
+	$.ajax({
+			url: '../getMaxDate',
+			data: {
+				'todoid': {{todolist.id}}
+			},
+			dataType: 'json',
+          
+			success: function (data) {
+				$("#due_date").attr('max',data.deadline); 
+			}
+		});
 });
 
   

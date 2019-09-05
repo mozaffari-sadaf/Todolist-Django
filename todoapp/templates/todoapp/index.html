@@ -22,8 +22,9 @@
 			{% for item in daily_list %}
 				<li data-id="{{item.id}}">
 					{% if item.important %}<b>{% endif %}
-					<p class="taskText">{{item.title}}</p>
-					<span class="taskText">should be done before<span class="itemDate"> {{item.date_to_do}}</span><span class="itemTime">{% if item.time_to_do %}{{item.time_to_do}} {% endif %}</span></span>
+					<p class="taskTitle"></p>
+					<p class="itemTitle"> - {{item.title}}</p>
+					<p class="itemDate"> - {{item.date_to_do}}</p>&nbsp<p class="itemTime">{% if item.time_to_do %}{{item.time_to_do}} {% endif %}</p>
 					{% if item.important %}</b>{% endif %}
 					<i class="fa fa-circle unChecked" onclick="toggleCheck({% verbatim %}this{% endverbatim %}, {{item.id}})"></i>
 					<i class="fa fa-check-circle checked" onclick="toggleCheck({% verbatim %}this{% endverbatim %}, {{item.id}})"></i>
@@ -40,8 +41,9 @@
 			{% for item in weekly_list %}
 				<li data-id="{{item.id}}">
 					{% if item.important %}<b>{% endif %}
-					<p class="taskText">{{item.title}}</p>
-					<span class="taskText">should be done before<span class="itemDate"> {{item.date_to_do}}</span><span class="itemTime">{% if item.time_to_do %}{{item.time_to_do}} {% endif %}</span></span>
+					<p class="taskTitle"></p>
+					<p class="itemTitle"> - {{item.title}}</p>
+					<p class="itemDate"> - {{item.date_to_do}}</p>&nbsp<p class="itemTime">{% if item.time_to_do %}{{item.time_to_do}} {% endif %}</p>
 					{% if item.important %}</b>{% endif %}
 					<i class="fa fa-circle unChecked" onclick="toggleCheck({% verbatim %}this{% endverbatim %}, {{item.id}})"></i>
 					<i class="fa fa-check-circle checked" onclick="toggleCheck({% verbatim %}this{% endverbatim %}, {{item.id}})"></i>
@@ -56,10 +58,11 @@
 		<section id="monthly">
 			<ol class="todoitems">
 			{% for item in monthly_list %}
-				<li data-id="{{item.id}}">
+				<li data-id="{{item.id}}" data-taskId="{{todo.todolist_id}}">
 					{% if item.important %}<b>{% endif %}
-					<p class="taskText">{{item.title}}</p>
-					<span class="taskText">should be done before<span class="itemDate"> {{item.date_to_do}}</span><span class="itemTime">{% if item.time_to_do %}{{item.time_to_do}} {% endif %}</span></span>
+					<p class="taskTitle"></p>
+					<p class="itemTitle"> - {{item.title}}</p>
+					<p class="itemDate"> - {{item.date_to_do}}</p>&nbsp<p class="itemTime">{% if item.time_to_do %}{{item.time_to_do}} {% endif %}</p>
 					{% if item.important %}</b>{% endif %}
 					<i class="fa fa-circle unChecked" onclick="toggleCheck({% verbatim %}this{% endverbatim %}, {{item.id}})"></i>
 					<i class="fa fa-check-circle checked" onclick="toggleCheck({% verbatim %}this{% endverbatim %}, {{item.id}})"></i>
@@ -80,7 +83,15 @@
 <script>
 
 $( document ).ready(function() {
-	checkDone(0);
+	//Run the initItems with "daily" tab
+	initItems(0);
+});
+
+//Display updated version of items on back button
+$(window).bind("pageshow", function(event) {
+    if (event.originalEvent.persisted) {
+        window.location.reload(); 
+    }
 });
 
 
@@ -94,11 +105,11 @@ function displayTab(tab){
 	$('section').removeClass('active');
 	$('section').eq(index).addClass('active');
 	
-	checkDone(index);
+	initItems(index);
 	
 }
 
-function checkDone(index){
+function initItems(index){
 	// Display list items as line-through or not based on their "done" fields.
 	var listItems = $('section').eq(index).find('ol').children('li');
 	
@@ -114,15 +125,28 @@ function checkDone(index){
 			success: function (data) {
 				if(data.is_checked){
 					$(li).addClass('done').removeClass('unDone');
-					$(li).find('.taskText').css({"text-decoration": "line-through"});
+					$(li).find('p').css({"text-decoration": "line-through"});
 				}else{
 					$(li).addClass('unDone').removeClass('done');
-					$(li).find('.taskText').css({"text-decoration": "none"});
+					$(li).find('p').css({"text-decoration": "none"});
 				}
+			}
+		});
+		//Get the task title of each item and display at the beginning of the line
+		$.ajax({
+			url: 'getTaskTitle/',
+			data: {
+				'todoid': $(li).attr("data-id")
+			},
+			dataType: 'json',
+          
+			success: function (data) {
+				$(li).find('.taskTitle').html(data.task_title);
 			}
 		});
 	}
 }
+
   
 function removeItem(tag, id){
 	var csrftoken = Cookies.get('csrftoken');
@@ -137,10 +161,10 @@ function removeItem(tag, id){
           
         success: function (data) {
 			$(tag).parent("li").remove();
-			//$('.stepNumber').html('step '+data.step_number+':');
         }
      });
 	}
+	
 	
 function toggleCheck(tag, id){
 	var csrftoken = Cookies.get('csrftoken');	
@@ -156,10 +180,10 @@ function toggleCheck(tag, id){
         success: function (data) {
 			if(data.is_checked){
 				$(tag).parent('li').addClass('done').removeClass('unDone');
-				$(tag).siblings('.taskText').css({"text-decoration": "line-through"});
+				$(tag).siblings('p').css({"text-decoration": "line-through"});
 			}else{
 				$(tag).parent('li').addClass('unDone').removeClass('done');
-				$(tag).siblings('.taskText').css({"text-decoration": "none"});
+				$(tag).siblings('p').css({"text-decoration": "none"});
 			}
         }
     });
