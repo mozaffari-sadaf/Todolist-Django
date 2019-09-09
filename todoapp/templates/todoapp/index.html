@@ -1,11 +1,6 @@
-{% load static %}
+{% extends 'todoapp/base.html' %}
 
-<link rel="stylesheet" type="text/css" href="{% static 'todoapp/styles.css' %}">
-<link rel="stylesheet" type="text/css" href="{% static 'fontawesome/css/fontawesome-all.min.css' %}">
-<script src="{% static 'todoapp/jquery-3.3.1.min.js' %}"></script>
-<script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
-
-<body>
+{% block content %}
 
 <div class="container">
 	<ul id="tabs">
@@ -13,8 +8,6 @@
 		<li onclick="displayTab({% verbatim %}this{% endverbatim %})">Weekly</li>
 		<li onclick="displayTab({% verbatim %}this{% endverbatim %})">Monthly</li>
 	</ul>
-	
-	<a href="{% url 'todoapp:generalTasks'%}" class="planning">Start Planning</a>
 	
 	<div id="tabchild">
 		<section id="daily" class="active">
@@ -75,9 +68,6 @@
 		</section>
 	</div>
 </div>
-
-</body>
-
 
 {% block javascript %}
 <script>
@@ -141,7 +131,7 @@ function initItems(index){
 			dataType: 'json',
           
 			success: function (data) {
-				$(li).find('.taskTitle').html(data.task_title);
+					$(li).find('.taskTitle').html(data.task_title);
 			}
 		});
 	}
@@ -190,5 +180,8 @@ function toggleCheck(tag, id){
 } 
 
 </script>
+
+{% endblock %}
+
 
 {% endblock %}

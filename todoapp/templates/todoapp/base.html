@@ -1,0 +1,11 @@
+{% load static %}
+<head>
+	<link rel="stylesheet" type="text/css" href="{% static 'todoapp/styles.css' %}">
+	<link rel="stylesheet" type="text/css" href="{% static 'fontawesome/css/fontawesome-all.min.css' %}">
+	<script src="{% static 'todoapp/jquery-3.3.1.min.js' %}"></script>
+	<script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+</head>
+<body>
+	{% include 'todoapp/nav.html' %}
+    {% block content %}{% endblock %}
+</body>

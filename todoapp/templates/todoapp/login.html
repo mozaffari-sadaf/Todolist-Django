@@ -1,0 +1,28 @@
+{% load static %}
+
+<link rel="stylesheet" type="text/css" href="{% static 'todoapp/styles.css' %}">
+<script src="{% static 'todoapp/jquery-3.3.1.min.js' %}"></script>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+
+{% load crispy_forms_tags %}
+{% block content %}
+<body>
+	<div class="container">
+		<section id="login">
+			<form method="post">
+			{% csrf_token %}
+			<fieldset class="form-group">
+					<legend class="border-bottom mb-4">Log In</legend>
+					{{form|crispy}}
+				</fieldset>
+			<button class="btn btn-info" type="submit">Login</button>
+			</form>
+			
+			<div>
+				Need An Account? <a href="{% url 'todoapp:signup' %}">Sign Up Now</a>
+			<div>
+		</section>
+	</div>
+</body>
+{% endblock %}

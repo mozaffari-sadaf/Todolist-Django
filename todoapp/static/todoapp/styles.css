@@ -7,7 +7,9 @@ body{
 	font-family: "Comic Sans MS", "Comic Sans", cursive;
 }
 
-.container{
+
+.container, nav{
+	float:left;
 	width: 50%;	
 	padding: 20px 20px 50px 30px;
 }
@@ -345,11 +347,11 @@ li:hover > i.delete, li:hover > i.editList{
 
 #tabs li.active{
         background: white;
-        border-top: 2px solid darkturquoise;
+        border-top: 2px solid #4c5772;
         box-shadow:  0 0 4px rgba(0,0,0,0.2);
 }
 
-#tabchild{
+#tabchild, #signup, #login, #items, #general, #logout{
 	max-width: 100%;
 	float: left;
 	clear: both;
@@ -370,20 +372,6 @@ li:hover > i.delete, li:hover > i.editList{
 }
 
 
-.planning{
-	text-decoration: none;
-	display:inline-block;
-	height:60px;
-	width: 120px;
-	color: darkturquoise;
-	background: white;
-	margin-left: 40px;
-	cursor: pointer;
-	border-radius: 10px 10px 10px 10px;
-	line-height: 53px;
-	text-align: center;
-}
-
 span.done{
 	position: absolute;
 	left: 90px;
@@ -400,4 +388,59 @@ span.done{
 
 .todolist li:hover span.done{
 	display: inline-block;
+}
+
+#general, #items{
+	background: rgba(255,255,255, 0.5);
+	padding: 20px;
+}
+
+
+#signup, #login, #logout{
+	background: rgba(74,148,83, 0.5);
+	padding: 20px;
+}
+
+#login label, #signup label{
+	margin-bottom:0px;
+	margin-top:10px;
+}
+
+nav{
+	margin-left: 20px;
+	border-radius: 10px 10px 10px 10px;
+	padding: 10px;
+	background: rgba(220,220,220, 0.5);
+}
+
+
+nav a{
+	text-decoration: none;
+	display:inline-block;
+	height:60px;
+	width: 120px;
+	color: white;
+	background: #4c5772;
+	margin-left: 10px;
+	cursor: pointer;
+	border-radius: 10px 10px 10px 10px;
+	line-height: 53px;
+	text-align: center;
+	float:right;
+}
+
+nav span{
+	height:60px;
+	padding-left:10px;
+	padding-right:10px;
+	color: #4c5772;
+	border-radius: 10px 10px 10px 10px;
+	line-height: 53px;
+	text-align: center;
+	float:left;
+	font-size: 17pt;
+}
+
+.asteriskField{
+	color: red;
 }

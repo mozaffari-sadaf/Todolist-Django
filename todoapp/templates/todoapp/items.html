@@ -1,15 +1,11 @@
-{% load static %}
+{% extends 'todoapp/base.html' %}
 
-<link rel="stylesheet" type="text/css" href="{% static 'todoapp/styles.css' %}">
-<link rel="stylesheet" type="text/css" href="{% static 'fontawesome/css/fontawesome-all.min.css' %}">
-<script src="{% static 'todoapp/jquery-3.3.1.min.js' %}"></script>
-<script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+{% block content %}
 
-<body>
 <div class="container">
 <h1>Steps of <span>{{todolist.title}}</span></h1>
 <h4>due to <span>{{todolist.deadline}}</span></h4>
-<form action="" method="post">
+<form action="" method="post" id="items">
 	{% csrf_token %}
 	<div class="todoFields">
 		<div class="first-row">
@@ -55,7 +51,6 @@
 	</ol>
 <form>
 </div>
-</body>
 
 {% block javascript %}
 <script>
@@ -195,4 +190,5 @@ function saveEdit(tag, id) {
     });
 }   
 </script>
+{% endblock %}
 {% endblock %}

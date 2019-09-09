@@ -2,23 +2,33 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.http import JsonResponse, HttpResponse, HttpResponseRedirect
 from django.views.decorators.csrf import csrf_exempt
 from django.utils import timezone
-from django.db.models.functions import Extract, ExtractWeek
+
+from django.contrib import messages
+from django.contrib.auth import login, authenticate
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
+from .forms import SignUpForm
 from .models import ToDoList, ToDoItem
+
 import datetime
 
 
 #To display items of each day, week, or month
+@login_required
 def index(request):
 
 	today = timezone.now().date()
 	current_week = today.strftime("%V")
 	current_month = today.month
 	
-	daily_list = ToDoItem.objects.filter(date_to_do=str(today)).order_by('done','time_to_do','-important');
+	daily_list = ToDoItem.objects.filter(date_to_do=str(today)).order_by('done','time_to_do','-important')
+	daily_list = daily_list.filter(todolist__user=User.objects.get(id=request.user.id))
 	
-	weekly_list = ToDoItem.objects.filter(date_to_do__week=current_week).order_by('done','date_to_do','-important','time_to_do'); 
+	weekly_list = ToDoItem.objects.filter(date_to_do__week=current_week).order_by('done','date_to_do','-important','time_to_do')
+	weekly_list = weekly_list.filter(todolist__user=User.objects.get(id=request.user.id))
 	
-	monthly_list = ToDoItem.objects.filter(date_to_do__month=current_month).order_by('done','date_to_do','-important','time_to_do');
+	monthly_list = ToDoItem.objects.filter(date_to_do__month=current_month).order_by('done','date_to_do','-important','time_to_do')
+	monthly_list = monthly_list.filter(todolist__user=User.objects.get(id=request.user.id))
 	
 	return render(request, "todoapp/index.html", {"daily_list": daily_list, "weekly_list": weekly_list, "monthly_list": monthly_list})
 	
@@ -33,7 +43,8 @@ def generalTasks(request):
 		if "save" in request.POST:
 			title = request.POST["title"]
 			deadline = request.POST["deadline"]
-			ToDo = ToDoList(title=title,deadline=deadline)
+			user = User.objects.get(id=request.user.id)
+			ToDo = ToDoList(user=user,title=title,deadline=deadline)
 			ToDo.save()
 			return redirect("/todoapp/generalTasks")
 		
@@ -266,3 +277,21 @@ def getTaskTitle(request):
 	data = {'task_title': task_title}
 	
 	return JsonResponse(data)
+
+	
+def signup(request):
+    
+	if request.method == 'POST':
+		form = SignUpForm(request.POST)
+		if form.is_valid():
+			form.save()
+			username = form.cleaned_data.get('username')
+			raw_password = form.cleaned_data.get('password1')
+			user = authenticate(username=username, password=raw_password)
+			messages.success(request, f'Your account has been created! You are now able to og in.')
+			# login(request, user)
+			return redirect('../login')
+	else:
+		form = SignUpForm()
+    
+	return render(request, 'todoapp/signup.html', {'form': form})

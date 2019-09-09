@@ -1,14 +1,9 @@
-{% load static %}
+{% extends 'todoapp/base.html' %}
 
-<link rel="stylesheet" type="text/css" href="{% static 'todoapp/styles.css' %}">
-<link rel="stylesheet" type="text/css" href="{% static 'fontawesome/css/fontawesome-all.min.css' %}">
-
-<script src="{% static 'todoapp/jquery-3.3.1.min.js' %}"></script>
-<script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
-<body>
+{% block content %}
 <div class="container">
 <h1>General Tasks</h1>
-<form action="" method="post">
+<form action="" method="post" id="general">
 	{% csrf_token %}
 	<div class="todoFields">
 		
@@ -28,7 +23,7 @@
 	<h3>In Progress Tasks:</h3>
 	<ul class="todolist">
 		{% for todo in todolist %}
-			{% if not todo.done %}
+			{% if not todo.done and todo.user_id == user.id %}
 			<li data-id="{{todo.id}}">
 				<p class="todotitle">{{todo.title}}</p>
 				<span class="date">{{todo.deadline}}</span>
@@ -44,8 +39,8 @@
 	
 	<h3>Accomplished Tasks:</h3>
 	<ul class="doneList">
-		{% for todo in todolist %}
-			{% if todo.done %}
+		{% for todo in todolist%}
+			{% if todo.done and todo.user_id == user.id  %}
 			<li data-id="{{todo.id}}">
 				<p class="todotitle">{{todo.title}}</p>
 				<div class="date">{{todo.deadline}}</div>
@@ -60,7 +55,6 @@
 	
 <form>
 </div>
-</body>
 
 {% block javascript %}
 <script>
@@ -169,4 +163,5 @@ $('.doneList').append(newTag);
 
 </script>
 
+{% endblock %}
 {% endblock %}
