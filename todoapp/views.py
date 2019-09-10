@@ -21,16 +21,22 @@ def index(request):
 	current_week = today.strftime("%V")
 	current_month = today.month
 	
+	daily_task = ToDoList.objects.filter(deadline=str(today),hasItem=False).order_by('done','deadline')
+	daily_task = daily_task.filter(user=User.objects.get(id=request.user.id))
 	daily_list = ToDoItem.objects.filter(date_to_do=str(today)).order_by('done','time_to_do','-important')
 	daily_list = daily_list.filter(todolist__user=User.objects.get(id=request.user.id))
 	
+	weekly_task = ToDoList.objects.filter(deadline__week=current_week,hasItem=False).order_by('done','deadline')
+	weekly_task = weekly_task.filter(user=User.objects.get(id=request.user.id))
 	weekly_list = ToDoItem.objects.filter(date_to_do__week=current_week).order_by('done','date_to_do','-important','time_to_do')
 	weekly_list = weekly_list.filter(todolist__user=User.objects.get(id=request.user.id))
 	
+	monthly_task = ToDoList.objects.filter(deadline__month=current_month, hasItem=False).order_by('done','deadline')
+	monthly_task = monthly_task.filter(user=User.objects.get(id=request.user.id))
 	monthly_list = ToDoItem.objects.filter(date_to_do__month=current_month).order_by('done','date_to_do','-important','time_to_do')
 	monthly_list = monthly_list.filter(todolist__user=User.objects.get(id=request.user.id))
 	
-	return render(request, "todoapp/index.html", {"daily_list": daily_list, "weekly_list": weekly_list, "monthly_list": monthly_list})
+	return render(request, "todoapp/index.html", {"daily_list": daily_list, "weekly_list": weekly_list, "monthly_list": monthly_list,"daily_task": daily_task, "weekly_task": weekly_task, "monthly_task": monthly_task})
 	
 
 #To display list of general Tasks
@@ -123,6 +129,8 @@ def todoItem(request, list_id):
 			else:
 				todolist.done = False;
 		
+			todolist.hasItem = True
+			
 			todolist.save();
 			
 			return HttpResponseRedirect("")
@@ -150,6 +158,9 @@ def removeItem(request, list_id=None):
 		parent_list.done = True;
 	else:
 		parent_list.done = False;
+		
+	if items_count == 0:
+		parent_list.hasItem = False
 		
 	parent_list.save();
 	
@@ -191,6 +202,26 @@ def toggleCheck(request, list_id=None):
 	return JsonResponse(data)
 	
 
+#Toggle the "done" field of the task
+@csrf_exempt
+def taskToggleCheck(request, list_id=None):
+	
+	task_id = request.POST.get('todoid', None)
+	
+	checked_task = ToDoList.objects.get(pk=task_id)
+	
+	if checked_task.done == False:
+		checked_task.done = True
+		data = {'is_checked': True}
+	else:
+		checked_task.done = False
+		data = {'is_checked': False}
+	
+	checked_task.save()
+	
+	return JsonResponse(data)
+
+	
 #To check that if the "done" field of an item is set to True or False
 def isChecked(request):
 	todo_id = request.GET.get('todoid', None)
@@ -203,6 +234,21 @@ def isChecked(request):
 		data = {'is_checked': False}
 	
 	return JsonResponse(data)
+
+	
+#To check that if the "done" field of a task is set to True or False
+def taskIsChecked(request):
+	task_id = request.GET.get('todoid', None)
+	
+	checked_task = ToDoList.objects.get(pk=task_id)
+	
+	if checked_task.done == True:
+		data = {'is_checked': True}
+	else:
+		data = {'is_checked': False}
+	
+	return JsonResponse(data)
+	
 	
 #To get the deadline of that task and set the maximum value of dateField to that	
 def getMaxDate(request):
@@ -231,9 +277,11 @@ def editItem(request):
 	edited_item = ToDoItem.objects.get(pk=item_id)
 	edited_item.title = new_title
 	
-	# if new_date != "" and new_time != "":
-	edited_item.date_to_do = new_date
-	edited_item.time_to_do = new_time
+	if new_date != "":
+		edited_item.date_to_do = new_date
+	
+	if new_time != "":
+		edited_item.time_to_do = new_time
 	
 	ret_data = {'new_date': edited_item.date_to_do,'new_time': edited_item.time_to_do}
 	

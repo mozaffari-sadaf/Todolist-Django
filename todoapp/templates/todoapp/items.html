@@ -3,8 +3,8 @@
 {% block content %}
 
 <div class="container">
-<h1>Steps of <span>{{todolist.title}}</span></h1>
-<h4>due to <span>{{todolist.deadline}}</span></h4>
+<h1>Steps Of <span>{{todolist.title}}</span></h1>
+<h4>Due To <span>{{todolist.deadline}}</span></h4>
 <form action="" method="post" id="items">
 	{% csrf_token %}
 	<div class="todoFields">
@@ -39,7 +39,7 @@
 		{% for item in todoitems %}
 			<li data-id="{{item.id}}">
 				{% if item.important %}<b>{% endif %}<p class="taskText">{{item.title}}</p>
-				<span class="taskText">should be done before<span class="itemDate"> {{item.date_to_do}}</span><span class="itemTime"> {% if item.time_to_do %}{{item.time_to_do}} {% endif %}</span></span>
+				<span class="taskText">should be done before <span class="itemDate"> {{item.date_to_do}}</span><span class="itemTime"> {% if item.time_to_do %}{{item.time_to_do}} {% endif %}</span></span>
 				{% if item.important %}</b>{% endif %}
 				<i class="fa fa-circle unChecked" onclick="toggleCheck({% verbatim %}this{% endverbatim %}, {{item.id}})"></i>
 				<i class="fa fa-check-circle checked" onclick="toggleCheck({% verbatim %}this{% endverbatim %}, {{item.id}})"></i>
@@ -132,10 +132,10 @@ function toggleCheck(tag, id){
         success: function (data) {
 			if(data.is_checked){
 				$(tag).parent('li').addClass('done').removeClass('unDone');
-				$(tag).siblings('.taskText').css({"text-decoration": "line-through"});
+				$(tag).parent('li').find('.taskText').css({"text-decoration": "line-through"});
 			}else{
 				$(tag).parent('li').addClass('unDone').removeClass('done');
-				$(tag).siblings('.taskText').css({"text-decoration": "none"});
+				$(tag).parent('li').find('.taskText').css({"text-decoration": "none"});
 			}
         }
     });
@@ -184,11 +184,12 @@ function saveEdit(tag, id) {
         success: function (data) {
 			$(tag).parent('li').find('p').html(titleValue);
 			$(tag).siblings('span').find('.itemDate').html(data.new_date);
-			$(tag).siblings('span').find('.itemTime').html(data.new_time);
+			$(tag).siblings('span').find('.itemTime').html(' ' + data.new_time);
 			$(tag).removeClass('active');
         }
     });
-}   
+}
+   
 </script>
 {% endblock %}
 {% endblock %}

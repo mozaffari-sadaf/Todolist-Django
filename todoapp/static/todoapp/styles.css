@@ -15,6 +15,7 @@ body{
 }
 
 h1{
+	margin-top: 0;
 	color: white;
 	margin-bottom: 20px !important;
 }
@@ -116,29 +117,31 @@ button.addTask, button.addItem, input{
 	position: relative;
 	height: 40px;
 	border-radius: 10px 10px 10px 10px;
-	overflow: hidden;
+	/* overflow: hidden; */
 }
 
 .date{
 	max-width: 90px;
 	display: inline-block;
-	font-size: 8pt;
+	font-size: 0.6em;
 	position:absolute;
 	bottom: 5px;
 }
 
 .viewItems{
 	display:inline-block;
-	width:85px;
-	height:100%;
+	width:75px;
+	height:41px;
 	position: absolute;
 	right:0;
 	top:0;
-	font-size:8pt;
+	font-size:0.7em;
 	text-align: center;
-	line-height: 40px;
 	text-decoration: none;
 	color: black;
+	margin-top:0;
+	border-radius: 0 10px 10px 0;
+	line-height: 13px !important
 }
 
 .todolist .viewItems{
@@ -149,9 +152,14 @@ button.addTask, button.addItem, input{
 	background: #7FFF00;
 }
 
-.delete, .checked, .unChecked, .editList, .editItem, .saveItem{
+.delete, .checked, .unChecked, .editList, .editItem, .saveItem, .todolist .done, .saveList{
 	display: none !important;
 	cursor: pointer;
+	font-size:0.7em;
+}
+
+.todolist .done{
+	color: green;
 }
 
 .delete{
@@ -191,7 +199,7 @@ button.addTask, button.addItem, input{
 }
 
 
-li:hover > i.delete, li:hover > i.editList{
+li:hover > i.delete, li:hover > i.editList, li:hover > i.done{
 	
 	display:inline-block !important;
 }
@@ -218,6 +226,12 @@ li:hover > i.delete, li:hover > i.editList{
 	top:5px;
 }
 
+.todolist .done{
+	position: absolute;
+	right: 5px;
+	bottom:5px;
+}
+
 .todolist a, .doneList a{
 	padding-top:9px;
 	line-height:16px;
@@ -225,18 +239,16 @@ li:hover > i.delete, li:hover > i.editList{
 
 .todolist .editList, .doneList .editList{
 	position: absolute;
-	left: 108px;
+	left: 120px;
 	top:5px;
 }
 
 .saveList{
-	display: none !important;
 	position: absolute;
-	left: 107px;
-	bottom:5px;
+	left: 119px;
+	bottom:7px;
 	color:green;
-	cursor: pointer;
-	
+	font-size: 0.8em;
 }
 
 .saveList.active{
@@ -246,15 +258,6 @@ li:hover > i.delete, li:hover > i.editList{
 .saveItem.active{
 	display: inline-block !important;
 }
-
-.todolist li p, .doneList li p{
-	margin-top:0;
-	width: 115px;
-	text-overflow:ellipsis;
-	white-space: nowrap;
-	overflow: hidden;
-}
-
 
 /* switch styles */
 .toggle-label {
@@ -306,7 +309,7 @@ li:hover > i.delete, li:hover > i.editList{
   width: 50%;
   color: #ddd;
   text-align: center;
-  font-size: 10pt;
+  font-size: 0.8em;
 }
 .toggle-label .label.on { left: 0px; }
 .toggle-label .label.off { right: 0px; }
@@ -356,35 +359,22 @@ li:hover > i.delete, li:hover > i.editList{
 	float: left;
 	clear: both;
 	display: block;
-	background: rgba(220,220,220, 0.5);
+	
 	border-radius: 10px 10px 10px 10px;
 }
 
 #tabchild section{
-        padding: 10px;
-        display: none !important;
+		background: rgba(220,220,220, 0.5);
+		padding: 10px 0 10px 10px;
+        display: none;
         float: left;
         width: 100%;
 }
 
 #tabchild section.active{
-	display: block !important;
+	display: block;
 }
 
-
-span.done{
-	position: absolute;
-	left: 90px;
-	bottom:4px;
-	display: none;
-	width:28px;
-	height:15px;
-	border-radius: 5px 5px 5px 5px;
-	font-size:7pt;
-	background: #7FFF00;
-	padding-left:5px;
-	cursor: pointer;
-}
 
 .todolist li:hover span.done{
 	display: inline-block;
@@ -427,6 +417,7 @@ nav a{
 	line-height: 53px;
 	text-align: center;
 	float:right;
+	font-size: 0.9em;
 }
 
 nav span{
@@ -438,9 +429,67 @@ nav span{
 	line-height: 53px;
 	text-align: center;
 	float:left;
-	font-size: 17pt;
+	font-size: 1em;
 }
 
 .asteriskField{
 	color: red;
+}
+
+.delete .tooltiptext, .editList .tooltiptext {
+  visibility: hidden;
+  width: 110px;
+  bottom:100%;
+  left:50%;
+  margin-left: -60px;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px 0;
+  position: absolute;
+  z-index: 1;
+  font-size: 1em;
+}
+
+.delete .tooltiptext{
+	background: red;
+}
+
+.editList .tooltiptext{
+	background: blue;
+}
+
+.done .tooltiptext{
+	visibility: hidden;
+	color: #fff;
+	width: 110px;
+	text-align: center;
+	border-radius: 6px;
+	padding: 5px 0;
+	position: absolute;
+	z-index: 1;
+	font-size: 1em;
+	background: green;
+	left:105%;
+	top:-5px;
+}
+
+.delete:hover .tooltiptext, .editList:hover .tooltiptext, .done:hover .tooltiptext {
+  visibility: visible;
+}
+
+.todolist li p, .doneList li p{
+	margin-top:0;
+	width: 114px;
+	text-overflow:ellipsis;
+	white-space: nowrap;
+	overflow: hidden;
+}
+
+input.dateTag, input.titleTag{
+	max-width:110px;
+}
+
+.taskTitle, .itemTitle, .todotitle, h1 > span, .thisTitle{
+	text-transform: capitalize;
 }

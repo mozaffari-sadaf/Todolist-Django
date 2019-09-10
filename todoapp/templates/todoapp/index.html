@@ -12,8 +12,17 @@
 	<div id="tabchild">
 		<section id="daily" class="active">
 			<ol class="todoitems">
+			{% for task in daily_task %}
+				<li data-id="{{task.id}}" class="task">
+					<p class="thisTitle">{{task.title}}</p>
+					<p class="taskDate"> - {{task.deadline}}</p>
+					<i class="fa fa-circle unChecked" onclick="toggleCheck({% verbatim %}this{% endverbatim %}, {{task.id}})"></i>
+					<i class="fa fa-check-circle checked" onclick="toggleCheck({% verbatim %}this{% endverbatim %}, {{task.id}})"></i>
+					<i class="fa fa-times delete" onclick="removeTask({% verbatim %}this{% endverbatim %}, {{task.id}})"></i>
+				</li>
+			{% endfor %}
 			{% for item in daily_list %}
-				<li data-id="{{item.id}}">
+				<li data-id="{{item.id}}" class="item">
 					{% if item.important %}<b>{% endif %}
 					<p class="taskTitle"></p>
 					<p class="itemTitle"> - {{item.title}}</p>
@@ -22,8 +31,6 @@
 					<i class="fa fa-circle unChecked" onclick="toggleCheck({% verbatim %}this{% endverbatim %}, {{item.id}})"></i>
 					<i class="fa fa-check-circle checked" onclick="toggleCheck({% verbatim %}this{% endverbatim %}, {{item.id}})"></i>
 					<i class="fa fa-times delete" onclick="removeItem({% verbatim %}this{% endverbatim %}, {{item.id}})"></i>
-					<!-- <i class="fa fa-pencil-alt editItem" onclick="startEdit({% verbatim %}this{% endverbatim %})"></i> -->
-					<i class="fa fa-check saveItem" onclick="saveEdit({% verbatim %}this{% endverbatim %}, {{item.id}})"></i>
 				</li>
 			{% endfor %}
 			</ol>
@@ -31,8 +38,17 @@
 		
 		<section id="weekly">
 			<ol class="todoitems">
+			{% for task in weekly_task %}
+				<li data-id="{{task.id}}" class="task">
+					<p class="thisTitle">{{task.title}}</p>
+					<p class="taskDate"> - {{task.deadline}}</p>
+					<i class="fa fa-circle unChecked" onclick="toggleCheck({% verbatim %}this{% endverbatim %}, {{task.id}})"></i>
+					<i class="fa fa-check-circle checked" onclick="toggleCheck({% verbatim %}this{% endverbatim %}, {{task.id}})"></i>
+					<i class="fa fa-times delete" onclick="removeTask({% verbatim %}this{% endverbatim %}, {{task.id}})"></i>
+				</li>
+			{% endfor %}
 			{% for item in weekly_list %}
-				<li data-id="{{item.id}}">
+				<li data-id="{{item.id}}" class="item">
 					{% if item.important %}<b>{% endif %}
 					<p class="taskTitle"></p>
 					<p class="itemTitle"> - {{item.title}}</p>
@@ -41,8 +57,6 @@
 					<i class="fa fa-circle unChecked" onclick="toggleCheck({% verbatim %}this{% endverbatim %}, {{item.id}})"></i>
 					<i class="fa fa-check-circle checked" onclick="toggleCheck({% verbatim %}this{% endverbatim %}, {{item.id}})"></i>
 					<i class="fa fa-times delete" onclick="removeItem({% verbatim %}this{% endverbatim %}, {{item.id}})"></i>
-					<!-- <i class="fa fa-pencil-alt editItem" onclick="startEdit({% verbatim %}this{% endverbatim %})"></i> -->
-					<i class="fa fa-check saveItem" onclick="saveEdit({% verbatim %}this{% endverbatim %}, {{item.id}})"></i>
 				</li>
 			{% endfor %}
 			</ol>
@@ -50,8 +64,17 @@
 		
 		<section id="monthly">
 			<ol class="todoitems">
+			{% for task in monthly_task %}
+				<li data-id="{{task.id}}" class="task">
+					<p class="thisTitle">{{task.title}}</p>
+					<p class="taskDate"> - {{task.deadline}}</p>
+					<i class="fa fa-circle unChecked" onclick="toggleCheck({% verbatim %}this{% endverbatim %}, {{task.id}})"></i>
+					<i class="fa fa-check-circle checked" onclick="toggleCheck({% verbatim %}this{% endverbatim %}, {{task.id}})"></i>
+					<i class="fa fa-times delete" onclick="removeTask({% verbatim %}this{% endverbatim %}, {{task.id}})"></i>
+				</li>
+			{% endfor %}
 			{% for item in monthly_list %}
-				<li data-id="{{item.id}}" data-taskId="{{todo.todolist_id}}">
+				<li data-id="{{item.id}}" data-taskId="{{todo.todolist_id}}" class="item">
 					{% if item.important %}<b>{% endif %}
 					<p class="taskTitle"></p>
 					<p class="itemTitle"> - {{item.title}}</p>
@@ -60,8 +83,6 @@
 					<i class="fa fa-circle unChecked" onclick="toggleCheck({% verbatim %}this{% endverbatim %}, {{item.id}})"></i>
 					<i class="fa fa-check-circle checked" onclick="toggleCheck({% verbatim %}this{% endverbatim %}, {{item.id}})"></i>
 					<i class="fa fa-times delete" onclick="removeItem({% verbatim %}this{% endverbatim %}, {{item.id}})"></i>
-					<!-- <i class="fa fa-pencil-alt editItem" onclick="startEdit({% verbatim %}this{% endverbatim %})"></i> -->
-					<i class="fa fa-check saveItem" onclick="saveEdit({% verbatim %}this{% endverbatim %}, {{item.id}})"></i>
 				</li>
 			{% endfor %}
 			</ol>
@@ -71,6 +92,9 @@
 
 {% block javascript %}
 <script>
+
+//To not display a blank section, if it doesn't have any content
+$('section:not(:has(li))').hide();
 
 $( document ).ready(function() {
 	//Run the initItems with "daily" tab
@@ -105,35 +129,56 @@ function initItems(index){
 	
 	for (let li of listItems) {
 		
-		$.ajax({
-			url: 'isChecked/',
-			data: {
-				'todoid': $(li).attr("data-id")
-			},
-			dataType: 'json',
+		if($(li).hasClass('item')){
+			$.ajax({
+				url: 'isChecked/',
+				data: {
+					'todoid': $(li).attr("data-id")
+				},
+				dataType: 'json',
           
-			success: function (data) {
-				if(data.is_checked){
-					$(li).addClass('done').removeClass('unDone');
-					$(li).find('p').css({"text-decoration": "line-through"});
-				}else{
-					$(li).addClass('unDone').removeClass('done');
-					$(li).find('p').css({"text-decoration": "none"});
+				success: function (data) {
+					if(data.is_checked){
+						$(li).addClass('done').removeClass('unDone');
+						$(li).find('p').css({"text-decoration": "line-through"});
+					}else{
+						$(li).addClass('unDone').removeClass('done');
+						$(li).find('p').css({"text-decoration": "none"});
+					}
 				}
-			}
-		});
-		//Get the task title of each item and display at the beginning of the line
-		$.ajax({
-			url: 'getTaskTitle/',
-			data: {
-				'todoid': $(li).attr("data-id")
-			},
-			dataType: 'json',
+			});
+			//Get the task title of each item and display at the beginning of the line
+			$.ajax({
+				url: 'getTaskTitle/',
+				data: {
+					'todoid': $(li).attr("data-id")
+				},
+				dataType: 'json',
           
-			success: function (data) {
+				success: function (data) {
 					$(li).find('.taskTitle').html(data.task_title);
-			}
-		});
+				}
+			});
+		}else{
+			$.ajax({
+				url: 'taskIsChecked/',
+				data: {
+					'todoid': $(li).attr("data-id")
+				},
+				dataType: 'json',
+          
+				success: function (data) {
+					if(data.is_checked){
+						$(li).addClass('done').removeClass('unDone');
+						$(li).find('p').css({"text-decoration": "line-through"});
+					}else{
+						$(li).addClass('unDone').removeClass('done');
+						$(li).find('p').css({"text-decoration": "none"});
+					}
+				}
+			});
+		}
+		
 	}
 }
 
@@ -153,30 +198,70 @@ function removeItem(tag, id){
 			$(tag).parent("li").remove();
         }
      });
-	}
-	
-	
-function toggleCheck(tag, id){
-	var csrftoken = Cookies.get('csrftoken');	
+}
+
+function removeTask(tag, id){
+	var csrftoken = Cookies.get('csrftoken');
 	$.ajax({
 		method: "POST",
-		url: 'toggleCheck/',
+		url: 'generalTasks/removeList/',
         data: {
 			'CSRF': csrftoken,
-			'todoid': id
+			'listid': id
         },
         dataType: 'json',
           
         success: function (data) {
-			if(data.is_checked){
-				$(tag).parent('li').addClass('done').removeClass('unDone');
-				$(tag).siblings('p').css({"text-decoration": "line-through"});
-			}else{
-				$(tag).parent('li').addClass('unDone').removeClass('done');
-				$(tag).siblings('p').css({"text-decoration": "none"});
-			}
+			$(tag).parent("li").remove();
         }
-    });
+     });
+}
+	
+	
+function toggleCheck(tag, id){
+	var csrftoken = Cookies.get('csrftoken');	
+	if($(tag).parent('li').hasClass('item')){
+		$.ajax({
+			method: "POST",
+			url: 'toggleCheck/',
+			data: {
+				'CSRF': csrftoken,
+				'todoid': id
+			},
+			dataType: 'json',
+          
+			success: function (data) {
+				if(data.is_checked){
+					$(tag).parent('li').addClass('done').removeClass('unDone');
+					$(tag).parent('li').find('p').css({"text-decoration": "line-through"});
+				}else{
+					$(tag).parent('li').addClass('unDone').removeClass('done');
+					$(tag).parent('li').find('p').css({"text-decoration": "none"});
+				}
+			}
+		});
+	}else{
+		$.ajax({
+			method: "POST",
+			url: 'taskToggleCheck/',
+			data: {
+				'CSRF': csrftoken,
+				'todoid': id
+			},
+			dataType: 'json',
+          
+			success: function (data) {
+				if(data.is_checked){
+					$(tag).parent('li').addClass('done').removeClass('unDone');
+					$(tag).parent('li').find('p').css({"text-decoration": "line-through"});
+				}else{
+					$(tag).parent('li').addClass('unDone').removeClass('done');
+					$(tag).parent('li').find('p').css({"text-decoration": "none"});
+				}
+			}
+		});
+	}
+	
 } 
 
 </script>
