@@ -265,10 +265,7 @@ def getMaxDate(request):
 @csrf_exempt
 def editItem(request):
 	
-	new_time = None;
-	if request.POST.get("timeValue", None) is not '':
-		new_time = request.POST.get("timeValue", None)
-	
+	new_time = request.POST.get("timeValue", None)
 	new_title = request.POST.get("titleValue",None)
 	new_date = request.POST.get("dateValue", None)
 	

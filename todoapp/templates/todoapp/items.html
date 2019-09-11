@@ -13,7 +13,7 @@
 				<label for="title" class="stepNumber">step {{step_number}}:</label>
 				<input type="text" id="title" placeholder="I have to do..." name="title" required>
 			</span>
-			<span class=important>Important</span>
+			<span class="important">Important</span>
 			<label class='toggle-label'>
 				<input type='checkbox' name="important"/>
 				<span class='back'>
@@ -144,16 +144,20 @@ function toggleCheck(tag, id){
 function startEdit(tag){
         
         var title = $(tag).parent('li').find('p').text();
-		var deadline =  $(tag).siblings('.itemDate').text(); 
+		var deadline =  $(tag).parent('li').find('.itemDate').text(); 
         
 		$(tag).siblings('.saveItem').addClass('active');
 
         var titleTag = '<input type="text" value= "' + title +'" class="titleTag"/>'
         $(tag).parent('li').find('p').html(titleTag);
 		
-		var dateTag = '<input type="date" class="dateTag"/><input type="time" class="timeTag"/>'
-		$(tag).siblings('span').find('.itemDate').html(dateTag);
+		var dateTag = '<input type="date" class="dateTag"/>'
+		$(tag).parent('li').find('span').find('.itemDate').html(dateTag);
 
+		var timeTag = '<input type="time" class="timeTag"/>'
+		$(tag).parent('li').find('span').find('.itemTime').html(timeTag);
+
+		
         $("ul input").click(function (e) {
             e.stopPropagation();
         });
@@ -167,8 +171,8 @@ function startEdit(tag){
 function saveEdit(tag, id) {
 	var csrftoken = Cookies.get('csrftoken');	
 	var titleValue = $(tag).parent('li').find('p').find('.titleTag').val();
-	var dateValue = $(tag).siblings('span').find('.dateTag').val();
-	var timeValue = $(tag).siblings('span').find('.timeTag').val();
+	var dateValue = $(tag).parent('li').find('span').find('.dateTag').val();
+	var timeValue = $(tag).parent('li').find('span').find('.timeTag').val();
 		$.ajax({
 			method: "POST",
 			url: '../editItem/',
@@ -183,8 +187,11 @@ function saveEdit(tag, id) {
           
         success: function (data) {
 			$(tag).parent('li').find('p').html(titleValue);
-			$(tag).siblings('span').find('.itemDate').html(data.new_date);
-			$(tag).siblings('span').find('.itemTime').html(' ' + data.new_time);
+			$(tag).parent('li').find('span').find('.itemDate').html(data.new_date);
+			if(data.new_time != null)
+				$(tag).parent('li').find('span').find('.itemTime').html(' ' + data.new_time);
+			else
+				$(tag).parent('li').find('span').find('.itemTime').html(''); 
 			$(tag).removeClass('active');
         }
     });

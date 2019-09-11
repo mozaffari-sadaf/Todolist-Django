@@ -28,16 +28,14 @@
 				<p class="todotitle">{{todo.title}}</p>
 				<span class="date">{{todo.deadline}}</span>
 				
-				<a href="{% url 'todoapp:items' todo.id %}" class="viewItems">View<br>Task Items
-					<!-- <span class="done" onclick="taskDone({% verbatim %}this{% endverbatim %},{{todo.id}})">Done</span> -->
-				</a>
+				<a href="{% url 'todoapp:items' todo.id %}" class="viewItems">Add/View<br>Task Items</a>
 				<i class="fa fa-times delete" onclick="removeList({% verbatim %}this{% endverbatim %}, {{todo.id}})">
 					<span class="tooltiptext">Remove The Task?</span>
 				</i>
 				<i class="fa fa-pencil-alt editList" onclick="startEdit({% verbatim %}this{% endverbatim %})">
 					<span class="tooltiptext">Edit The Task</span>
 				</i>
-				<i class="fa fa-check saveList" onclick="saveEdit({% verbatim %}this{% endverbatim %}, {{todo.id}})"></i>
+				<i class="fa fa-arrow-circle-down saveList" onclick="saveEdit({% verbatim %}this{% endverbatim %}, {{todo.id}})"></i>
 				<i class="fa fa-check done" onclick="taskDone({% verbatim %}this{% endverbatim %},{{todo.id}})">
 					<span class="tooltiptext">Task Completed?</span>
 				</i>
@@ -53,7 +51,7 @@
 			<li data-id="{{todo.id}}">
 				<p class="todotitle">{{todo.title}}</p>
 				<div class="date">{{todo.deadline}}</div>
-				<a href="{% url 'todoapp:items' todo.id %}" class="viewItems">View<br>Task Items</a>
+				<a href="{% url 'todoapp:items' todo.id %}" class="viewItems">Add/View<br>Task Items</a>
 				<i class="fa fa-times delete" onclick="removeList({% verbatim %}this{% endverbatim %}, {{todo.id}})">
 					<span class="tooltiptext">Remove the Task?</span>
 				</i>
@@ -89,7 +87,7 @@ $(window).bind("pageshow", function(event) {
 displayTooltip();
 
 function removeList(tag, id){
-	return confirm('Are you sure you want to delete this?');
+	
 	var csrftoken = Cookies.get('csrftoken');
 	$.ajax({
 		method: "POST",
