@@ -5,8 +5,8 @@
 		{% if request.get_full_path != '/todoapp/' %}
 			<a href="{% url 'todoapp:index'%}" class="planning">Your Calendar</a>
 		{% endif %}
-		{% if request.get_full_path != '/todoapp/generalTasks/' %}
-			<a href="{% url 'todoapp:generalTasks'%}" class="planning">Keep Planning</a>
+		{% if request.get_full_path != '/todoapp/general_tasks/' %}
+			<a href="{% url 'todoapp:general-tasks'%}" class="planning">Keep Planning</a>
 		{% endif %}
 		<span><b>{{user.username}}!</b> Light Tomorrow With Today :)</span>
 	{% else %}

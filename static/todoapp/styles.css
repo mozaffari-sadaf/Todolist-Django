@@ -4,7 +4,7 @@ body{
 	-moz-background-size: cover;
 	background-size: cover;
 	
-	font-family: "Comic Sans MS", "Comic Sans", cursive;
+	font-family: Arial, Helvetica Neue, Helvetica, sans-serif;
 }
 
 
@@ -492,4 +492,9 @@ input.dateTag, input.titleTag{
 
 .taskTitle, .itemTitle, .todotitle, h1 > span, .thisTitle{
 	text-transform: capitalize;
+}
+
+input[type=date]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    display: none;
 }

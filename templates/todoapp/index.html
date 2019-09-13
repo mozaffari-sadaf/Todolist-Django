@@ -2,7 +2,13 @@
 
 {% block content %}
 
+<title>
+    {% block title %}Calendar| ToDoList{% endblock %}
+</title>
+
 <div class="container">
+
+
 	<ul id="tabs">
 		<li class="active" onclick="displayTab({% verbatim %}this{% endverbatim %})">Daily</li>
 		<li onclick="displayTab({% verbatim %}this{% endverbatim %})">Weekly</li>
@@ -131,7 +137,7 @@ function initItems(index){
 		
 		if($(li).hasClass('item')){
 			$.ajax({
-				url: 'isChecked/',
+				url: 'item_is_checked/',
 				data: {
 					'todoid': $(li).attr("data-id")
 				},
@@ -149,7 +155,7 @@ function initItems(index){
 			});
 			//Get the task title of each item and display at the beginning of the line
 			$.ajax({
-				url: 'getTaskTitle/',
+				url: 'get_task_title/',
 				data: {
 					'todoid': $(li).attr("data-id")
 				},
@@ -161,7 +167,7 @@ function initItems(index){
 			});
 		}else{
 			$.ajax({
-				url: 'taskIsChecked/',
+				url: 'task_is_checked/',
 				data: {
 					'todoid': $(li).attr("data-id")
 				},
@@ -187,7 +193,7 @@ function removeItem(tag, id){
 	var csrftoken = Cookies.get('csrftoken');
 	$.ajax({
 		method: "POST",
-		url: 'removeItem/',
+		url: 'remove_item/',
         data: {
 			'CSRF': csrftoken,
 			'todoid': id
@@ -204,7 +210,7 @@ function removeTask(tag, id){
 	var csrftoken = Cookies.get('csrftoken');
 	$.ajax({
 		method: "POST",
-		url: 'generalTasks/removeList/',
+		url: 'general_tasks/remove_list/',
         data: {
 			'CSRF': csrftoken,
 			'listid': id
@@ -223,7 +229,7 @@ function toggleCheck(tag, id){
 	if($(tag).parent('li').hasClass('item')){
 		$.ajax({
 			method: "POST",
-			url: 'toggleCheck/',
+			url: 'item_toggle_check/',
 			data: {
 				'CSRF': csrftoken,
 				'todoid': id
@@ -243,7 +249,7 @@ function toggleCheck(tag, id){
 	}else{
 		$.ajax({
 			method: "POST",
-			url: 'taskToggleCheck/',
+			url: 'task_toggle_check/',
 			data: {
 				'CSRF': csrftoken,
 				'todoid': id

@@ -40,7 +40,7 @@ def index(request):
 	
 
 #To display list of general Tasks
-def generalTasks(request):
+def general_tasks(request):
 	
 	todolist = ToDoList.objects.all()
 	
@@ -52,14 +52,14 @@ def generalTasks(request):
 			user = User.objects.get(id=request.user.id)
 			ToDo = ToDoList(user=user,title=title,deadline=deadline)
 			ToDo.save()
-			return redirect("/todoapp/generalTasks")
+			return redirect("/todoapp/general_tasks")
 		
 	return render(request, "todoapp/general.html", {"todolist": todolist})
 			
 
 #To remove a todolist from database
 @csrf_exempt
-def removeList(request):
+def remove_list(request):
 	
 	list_id = request.POST.get('listid', None)
 	
@@ -73,7 +73,7 @@ def removeList(request):
 
 # To edit date or title of a todolist
 @csrf_exempt
-def editList(request):
+def edit_list(request):
 
 	new_title = request.POST.get("titleValue",None)
 	new_date = request.POST.get("dateValue", None)
@@ -93,7 +93,7 @@ def editList(request):
 
 	
 # To display items of a todolist and to show that if items have done or not
-def todoItem(request, list_id):
+def todo_item(request, list_id):
 
 	todolist = ToDoList.objects.get(id=list_id)
 	
@@ -133,14 +133,14 @@ def todoItem(request, list_id):
 			
 			todolist.save();
 			
-			return HttpResponseRedirect("")
+			return redirect("/todoapp/"+str(list_id))
 		
 	return render(request, "todoapp/items.html", context)
 	
 
 #To remove an item and update both ToDoList and ToDoItem tables
 @csrf_exempt
-def removeItem(request, list_id=None):
+def remove_item(request, list_id=None):
 	
 	todo_id = request.POST.get('todoid', None)
 	
@@ -171,7 +171,7 @@ def removeItem(request, list_id=None):
 
 #Toggle the "done" field of ToDoItem and change the "done" field of ToDoList if all the items have done or vice versa
 @csrf_exempt
-def toggleCheck(request, list_id=None):
+def item_toggle_check(request, list_id=None):
 	
 	todo_id = request.POST.get('todoid', None)
 	
@@ -204,7 +204,7 @@ def toggleCheck(request, list_id=None):
 
 #Toggle the "done" field of the task
 @csrf_exempt
-def taskToggleCheck(request, list_id=None):
+def task_toggle_check(request, list_id=None):
 	
 	task_id = request.POST.get('todoid', None)
 	
@@ -223,7 +223,7 @@ def taskToggleCheck(request, list_id=None):
 
 	
 #To check that if the "done" field of an item is set to True or False
-def isChecked(request):
+def item_is_checked(request):
 	todo_id = request.GET.get('todoid', None)
 	
 	checked_item = ToDoItem.objects.get(pk=todo_id)
@@ -237,7 +237,7 @@ def isChecked(request):
 
 	
 #To check that if the "done" field of a task is set to True or False
-def taskIsChecked(request):
+def task_is_checked(request):
 	task_id = request.GET.get('todoid', None)
 	
 	checked_task = ToDoList.objects.get(pk=task_id)
@@ -251,7 +251,7 @@ def taskIsChecked(request):
 	
 	
 #To get the deadline of that task and set the maximum value of dateField to that	
-def getMaxDate(request):
+def get_max_date(request):
 	
 	task_id = request.GET.get('todoid', None)
 	
@@ -263,7 +263,7 @@ def getMaxDate(request):
 
 #To change the title or date of a todoitem
 @csrf_exempt
-def editItem(request):
+def edit_item(request):
 	
 	new_time = request.POST.get("timeValue", None)
 	new_title = request.POST.get("titleValue",None)
@@ -288,7 +288,7 @@ def editItem(request):
 	
 #To make the task and its items done	
 @csrf_exempt	
-def taskDone(request):
+def task_done(request):
 	
 	task_id = request.POST.get('taskId', None)
 	
@@ -311,7 +311,7 @@ def taskDone(request):
 	return JsonResponse(data)
 	
 #Get the task title of the given item	
-def getTaskTitle(request):
+def get_task_title(request):
 
 	item_id = request.GET.get('todoid', None)
 	

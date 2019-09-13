@@ -1,7 +1,13 @@
 {% extends 'todoapp/base.html' %}
 
 {% block content %}
+
+<title>
+    {% block title %}General Tasks | ToDoList{% endblock %}
+</title>
+
 <div class="container">
+
 <h1>General Tasks</h1>
 <form action="" method="post" id="general">
 	{% csrf_token %}
@@ -91,7 +97,7 @@ function removeList(tag, id){
 	var csrftoken = Cookies.get('csrftoken');
 	$.ajax({
 		method: "POST",
-		url: 'removeList/',
+		url: 'remove_list/',
         data: {
 			'CSRF': csrftoken,
 			'listid': id
@@ -134,7 +140,7 @@ function saveEdit(tag, id) {
 	var dateValue = $(tag).siblings('.date').find('.dateTag').val();
 		$.ajax({
 			method: "POST",
-			url: 'editList/',
+			url: 'edit_list/',
         data: {
 			'CSRF': csrftoken,
 			'listId': id,
@@ -160,7 +166,7 @@ function taskDone(tag, taskId){
 	var csrftoken = Cookies.get('csrftoken');
 	$.ajax({
 			method: "POST",
-			url: 'taskDone/',
+			url: 'task_done/',
         data: {
 			'CSRF': csrftoken,
 			'taskId': taskId
