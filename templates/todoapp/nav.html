@@ -2,10 +2,10 @@
 	{% if user.is_authenticated %}
 		
 		<a class="nav-item nav-link" href="{% url 'todoapp:logout' %}">Log Out</a>
-		{% if request.get_full_path != '/todoapp/' %}
+		{% if request.get_full_path != '/' %}
 			<a href="{% url 'todoapp:index'%}" class="planning">Your Calendar</a>
 		{% endif %}
-		{% if request.get_full_path != '/todoapp/general_tasks/' %}
+		{% if request.get_full_path != '/general_tasks/' %}
 			<a href="{% url 'todoapp:general-tasks'%}" class="planning">Keep Planning</a>
 		{% endif %}
 		<span><b>{{user.username}}!</b> Light Tomorrow With Today :)</span>

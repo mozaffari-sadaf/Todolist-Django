@@ -52,7 +52,7 @@ def general_tasks(request):
 			user = User.objects.get(id=request.user.id)
 			ToDo = ToDoList(user=user,title=title,deadline=deadline)
 			ToDo.save()
-			return redirect("/todoapp/general_tasks")
+			return redirect("/general_tasks")
 		
 	return render(request, "todoapp/general.html", {"todolist": todolist})
 			
@@ -133,7 +133,7 @@ def todo_item(request, list_id):
 			
 			todolist.save();
 			
-			return redirect("/todoapp/"+str(list_id))
+			return redirect("/"+str(list_id))
 		
 	return render(request, "todoapp/items.html", context)
 	

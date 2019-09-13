@@ -175,7 +175,7 @@ function taskDone(tag, taskId){
           
         success: function (data) {
 			$(tag).parent('li').remove();
-			newTag = '<li data-id="'+taskId+'"><p class="todotitle">'+taskTitle+'</p><div class="date">'+taskDeadline+'</div><a href="/todoapp/'+taskId+'" class="viewItems">View<br>Task Items</a><i class="fa fa-times delete" onclick="removeList('+{% verbatim %}this{% endverbatim %}+','+ taskId+')"></i><i class="fa fa-pencil-alt editList" onclick="startEdit('+{% verbatim %}this{% endverbatim %}+')"></i><i class="fa fa-check saveList" onclick="saveEdit('+{% verbatim %}this{% endverbatim %}, taskId+')"></i></li>';
+			newTag = '<li data-id="'+taskId+'"><p class="todotitle">'+taskTitle+'</p><div class="date">'+taskDeadline+'</div><a href="/'+taskId+'" class="viewItems">View<br>Task Items</a><i class="fa fa-times delete" onclick="removeList('+{% verbatim %}this{% endverbatim %}+','+ taskId+')"></i><i class="fa fa-pencil-alt editList" onclick="startEdit('+{% verbatim %}this{% endverbatim %}+')"></i><i class="fa fa-check saveList" onclick="saveEdit('+{% verbatim %}this{% endverbatim %}, taskId+')"></i></li>';
 $('.doneList').append(newTag);
         }
     });
