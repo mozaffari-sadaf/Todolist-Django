@@ -377,7 +377,7 @@ li:hover > i.delete, li:hover > i.editList, li:hover > i.done{
 		padding: 1% 1% 1% 1%;
         display: none;
         float: left;
-        width: 98%;
+        width: 100%;
 }
 
 #tabchild section.active{
