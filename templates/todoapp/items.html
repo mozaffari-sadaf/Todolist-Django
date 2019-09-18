@@ -8,7 +8,7 @@
 
 <div class="container">
 
-<h1>Steps Of <span>{{todolist.title}}</span></h1>
+<h1>Steps of <span>{{todolist.title}}</span></h1>
 <h4>Due To <span>{{todolist.deadline}}</span></h4>
 <form action="" method="post" id="items">
 	{% csrf_token %}
@@ -18,7 +18,7 @@
 				<label for="title" class="stepNumber">step {{step_number}}:</label>
 				<input type="text" id="title" placeholder="I have to do..." name="title" required>
 			</span>
-			<span class="important">Important</span>
+			<span class="important">Important
 			<label class='toggle-label'>
 				<input type='checkbox' name="important"/>
 				<span class='back'>
@@ -27,6 +27,8 @@
 					<span class='label off'>NO</span>  
 				</span>
 			</label>
+			</span>
+			
 		</div>
 		<div class="second-row">
 			<span>

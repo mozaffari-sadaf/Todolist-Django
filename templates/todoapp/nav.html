@@ -3,7 +3,7 @@
 		
 		<a class="nav-item nav-link" href="{% url 'todoapp:logout' %}">Log Out</a>
 		{% if request.get_full_path != '/' %}
-			<a href="{% url 'todoapp:index'%}" class="planning">Your Calendar</a>
+			<a href="{% url 'todoapp:index'%}" class="planning">My Calendar</a>
 		{% endif %}
 		{% if request.get_full_path != '/general_tasks/' %}
 			<a href="{% url 'todoapp:general-tasks'%}" class="planning">Keep Planning</a>
