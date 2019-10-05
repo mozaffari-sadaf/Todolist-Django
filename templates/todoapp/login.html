@@ -11,6 +11,10 @@
 
 {% load crispy_forms_tags %}
 {% block content %}
+<head>
+	<link rel="stylesheet" type="text/css" href="{% static 'fontawesome/css/fontawesome-all.min.css' %}">
+	<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-social/5.1.1/bootstrap-social.css"></script> -->
+</head>
 <body>
 	<div class="container">
 		<section id="login">
@@ -23,7 +27,13 @@
 			<button class="btn btn-info" type="submit">Login</button>
 			</form>
 			
-			<div>
+			<br>
+			<p><strong>-- OR --</strong></p>
+			<a href="{% url 'social:begin' 'google-oauth2' %}">
+				<img id="google-login" src="{% static 'todoapp/images/btn_google_signin.png' %}">
+			</a>
+		
+			<div class="signup">
 				Need An Account? <a href="{% url 'todoapp:signup' %}">Sign Up Now</a>
 			<div>
 		</section>

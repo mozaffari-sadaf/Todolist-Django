@@ -24,6 +24,10 @@
 			<button class="btn btn-info" type="submit">Sign up</button>
 			</form>
 			
+			<br>
+			<p><strong>-- OR --</strong></p>
+			<a href="{% url 'social:begin' 'google-oauth2' %}">Sign up with Google</a>
+			
 			<div>
 				Already Have An Account? <a href="{% url 'todoapp:login' %}">Sign In</a>
 			<div>

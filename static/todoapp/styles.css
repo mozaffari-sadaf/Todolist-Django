@@ -647,3 +647,11 @@ input[type=date]::-webkit-inner-spin-button {
 		display:block;
 	}
 }
+
+#google-login{
+  width:14vw;
+}
+
+.signup{
+	margin-top:20px;
+}

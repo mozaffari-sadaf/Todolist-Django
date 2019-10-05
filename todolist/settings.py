@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 	'django_static_fontawesome',
 	'todoapp',
+	'social_django',
 ]
 
 MIDDLEWARE = [
@@ -65,6 +66,8 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+				'social_django.context_processors.backends',
+				'social_django.context_processors.login_redirect',
             ],
         },
     },
@@ -120,6 +123,11 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
+AUTHENTICATION_BACKENDS = (
+ 'social_core.backends.google.GoogleOAuth2',  # for Google authentication
+ 'django.contrib.auth.backends.ModelBackend',
+)
+
 STATIC_URL = '/static/'
 
 
@@ -145,3 +153,8 @@ DATABASES['default'].update(db_from_env)
 import django_heroku
 # Activate Django-Heroku.
 django_heroku.settings(locals())
+
+SOCIAL_AUTH_URL_NAMESPACE = 'social'
+
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY ='181958479296-k822bc5vkqfeia5htkkfb3nrq2r1ct3t.apps.googleusercontent.com'  #CLient Key
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = 'iyCatpB3Lm8-L7RfMunckuvi' #Secret Key
